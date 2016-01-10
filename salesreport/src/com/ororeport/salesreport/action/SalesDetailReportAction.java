@@ -8,15 +8,15 @@ import javax.swing.JTabbedPane;
 import com.floreantpos.bo.ui.BackOfficeWindow;
 import com.ororeport.salesreport.ui.SalesDetailReportView;
 
-public class SalesReportAction extends AbstractAction {
+public class SalesDetailReportAction extends AbstractAction {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
 
-	public SalesReportAction() {
-		super("Company Browser");
+	public SalesDetailReportAction() {
+		super("Sales Report");
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -25,7 +25,7 @@ public class SalesReportAction extends AbstractAction {
 
 		SalesDetailReportView browser = null;
 
-		int index = tabbedPane.indexOfTab("Company Browser");
+		int index = tabbedPane.indexOfTab("Sales Report");
 		if (index == -1) {
 			browser = new SalesDetailReportView();
 			tabbedPane.addTab("Sales Report", browser);

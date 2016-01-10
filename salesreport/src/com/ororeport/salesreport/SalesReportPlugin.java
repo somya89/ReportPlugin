@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JTabbedPane;
 
+import net.xeoh.plugins.base.annotations.PluginImplementation;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.ProjectionList;
@@ -23,16 +25,15 @@ import com.floreantpos.model.Ticket;
 import com.floreantpos.model.dao.GenericDAO;
 import com.floreantpos.report.SalesDetailedReport;
 import com.floreantpos.report.SalesDetailedReport.DrawerPullData;
-
-import net.xeoh.plugins.base.annotations.PluginImplementation;
+import com.ororeport.salesreport.action.SalesDetailReportAction;
 
 @PluginImplementation
 public class SalesReportPlugin implements ReportPlugin {
 
 	@Override
 	public AbstractAction[] getReportActions() {
-		// TODO Auto-generated method stub
-		return null;
+		return new AbstractAction[] { 
+				new SalesDetailReportAction()};
 	}
 
 	@Override
@@ -43,8 +44,7 @@ public class SalesReportPlugin implements ReportPlugin {
 
 	@Override
 	public String getBaseMenuName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Sales";
 	}
 	
 	public SalesDetailedReport getSalesDetailedReport(Date fromDate, Date toDate) {
