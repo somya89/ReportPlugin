@@ -13,7 +13,16 @@
 	<modules>
 		<module>salesreport</module>
 	</modules>
-
+	<repositories>
+		<repository>
+			<id>FloreantPos-mvn-repo</id>
+			<url>https://raw.github.com/somya89/FloreantPos/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
