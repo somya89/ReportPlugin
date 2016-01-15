@@ -1,0 +1,25 @@
+<assembly>
+	<id>bin</id>
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<baseDirectory>${project.build.finalName}</baseDirectory>
+	<formats>
+		<format>jar</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+  <moduleSets>
+    <moduleSet>
+    
+      <!-- Enable access to all projects in the current multimodule build! -->
+      <useAllReactorProjects>true</useAllReactorProjects>
+      
+      <!-- Now, select which projects to include in this module-set. -->
+      <includes>
+        <include>com.oro:menuItemDetailReport</include>
+      </includes>
+      <binaries>
+        <outputDirectory>modules/maven-assembly-plugin</outputDirectory>
+        <unpack>false</unpack>
+      </binaries>
+    </moduleSet>
+  </moduleSets>
+</assembly>

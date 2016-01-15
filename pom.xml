@@ -12,6 +12,7 @@
 
 	<modules>
 		<module>salesreport</module>
+		<module>menuItemDetailReport</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -37,7 +38,7 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<descriptor>resources/mvn-assembly.xml</descriptor>
+					<descriptor>mvn-assembly.xml</descriptor>
 				</configuration>
 			</plugin>
 		</plugins>
