@@ -11,7 +11,7 @@
 	</properties>
 
 	<modules>
-		<module>salesreport</module>
+		<module>orderDetailReport</module>
 		<module>menuItemDetailReport</module>
 	</modules>
 	<repositories>
