@@ -6,54 +6,32 @@ import com.floreantpos.model.TaxTreatment;
 
 public class MenuItemDetailReportItem {
 	private String date;
-	private String id;
-	private String name;
-	private double sellPrice;
-	private double buyPrice;
-	private double profit;
+	private String menuName;
+	private double taxAmount;
+	private double price;
+	private double totalAmount;
 	private int quantity;
 	private List<TaxTreatment> taxList;
 	private double discount;
-	
-	private String ticketId;
-	private double taxAmount;
-	private double basePrice;
-	private double totalAmount;
 
-	public String getTicketId() {
-		return ticketId;
+	public String getMenuName() {
+		return menuName;
 	}
 
-	public void setTicketId(String ticketId) {
-		this.ticketId = ticketId;
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
 	}
 
-	public double getBasePrice() {
-		return basePrice;
+	public double getPrice() {
+		return price;
 	}
 
-	public void setBasePrice(double basePrice) {
-		this.basePrice = basePrice;
-	}
-
-	public double getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(double totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public MenuItemDetailReportItem() {
 		super();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public int getQuantity() {
@@ -64,20 +42,12 @@ public class MenuItemDetailReportItem {
 		this.quantity = quantity;
 	}
 
-	public double getPrice() {
-		return sellPrice;
+	public double getTotalAmount() {
+		return totalAmount;
 	}
 
-	public void setPrice(double price) {
-		this.sellPrice = price;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	public void setTotalAmount(double totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
 	public String getDate() {
@@ -86,22 +56,6 @@ public class MenuItemDetailReportItem {
 
 	public void setDate(String date) {
 		this.date = date;
-	}
-
-	public double getBuyPrice() {
-		return buyPrice;
-	}
-
-	public void setBuyPrice(double buyPrice) {
-		this.buyPrice = buyPrice;
-	}
-
-	public double getProfit() {
-		return profit;
-	}
-
-	public void setProfit(double profit) {
-		this.profit = profit;
 	}
 
 	public double getDiscount() {

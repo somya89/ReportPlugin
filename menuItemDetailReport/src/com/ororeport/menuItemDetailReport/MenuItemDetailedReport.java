@@ -3,8 +3,8 @@ package com.ororeport.menuItemDetailReport;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -109,89 +109,132 @@ public class MenuItemDetailedReport extends Report {
 
 		List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, date2);
 		refreshBuyPrice();
-		HashMap<String, MenuItemDetailReportItem> itemMap = new HashMap<String, MenuItemDetailReportItem>();
-		HashMap<String, MenuItemDetailReportItem> modifierMap = new HashMap<String, MenuItemDetailReportItem>();
 		List<MenuItemDetailReportItem> itemList = new ArrayList<MenuItemDetailReportItem>();
-		List<MenuItemDetailReportItem> modifierList = new ArrayList<MenuItemDetailReportItem>();
-		for (Ticket t : tickets) {
-
-			Ticket ticket = TicketDAO.getInstance().loadFullTicket(t.getId());
-
-			List<TicketItem> ticketItems = ticket.getTicketItems();
-			if (ticketItems == null)
+		String startDate = null;
+		if (tickets.get(0) != null) {
+			startDate = TicketDAO.getInstance().loadFullTicket(tickets.get(0).getId()).getCreateDateFormatted();
+		}
+		int start = 0;
+		for (int i = 0; i < tickets.size(); i++) {
+			Ticket t = TicketDAO.getInstance().loadFullTicket(tickets.get(i).getId());
+			String ticketDt1 = t.getCreateDateFormatted();
+			if (startDate.equals(ticketDt1) && i != tickets.size() - 1) {
 				continue;
-			boolean first = true;
-			String key = null;
-			for (TicketItem ticketItem : ticketItems) {
-				if (ticketItem.getItemId() == null) {
-					key = ticketItem.getName();
-				} else {
-					key = ticketItem.getItemId().toString();
-				}
-				MenuItemDetailReportItem reportItem = itemMap.get(key);
-				MenuItem mi = MenuItemDAO.getInstance().findByItemId(ticketItem.getItemId());
-				if (reportItem == null) {
-					reportItem = new MenuItemDetailReportItem();
-					reportItem.setId(key);
-					if (first) {
-						reportItem.setTicketId(TicketUtils.getTicketNumber(ticket));
-						reportItem.setDate(ticket.getCreateDateFormatted());
-						first = false;
-					} else{
-						reportItem.setTicketId(null);
-						reportItem.setDate(null);
-					}
-					reportItem.setPrice(ticketItem.getUnitPrice());
-					reportItem.setBuyPrice(mi.getBuyPrice());
-					reportItem.setProfit(ticketItem.getUnitPrice() - mi.getBuyPrice());
-					reportItem.setName(ticketItem.getName());
-					reportItem.setTaxList(ticketItem.getTaxList());
-					reportItem.setTaxAmount(ticketItem.getTaxAmount());
-					reportItem.setDiscount(ticketItem.getDiscountAmount());
-					reportItem.setQuantity(ticketItem.getItemCount());
-					reportItem.setTotalAmount(ticketItem.getTotalAmount());
-					itemList.add(reportItem);
-//					itemMap.put(key, reportItem);
-				}
-
-				if (ticketItem.isHasModifiers() && ticketItem.getTicketItemModifierGroups() != null) {
-					List<TicketItemModifierGroup> ticketItemModifierGroups = ticketItem.getTicketItemModifierGroups();
-
-					for (TicketItemModifierGroup ticketItemModifierGroup : ticketItemModifierGroups) {
-						List<TicketItemModifier> modifiers = ticketItemModifierGroup.getTicketItemModifiers();
-						for (TicketItemModifier modifier : modifiers) {
-							if (modifier.getItemId() == null) {
-								key = modifier.getName();
-							} else {
-								key = modifier.getItemId().toString();
-							}
-							MenuItemDetailReportItem modifierReportItem = modifierMap.get(key);
-							if (modifierReportItem == null) {
-								modifierReportItem = new MenuItemDetailReportItem();
-								modifierReportItem.setId(key);
-								modifierReportItem.setPrice(modifier.getUnitPrice());
-								modifierReportItem.setName(modifier.getName());
-								// modifierReportItem.setTaxRate(modifier.getTaxRate());
-								modifierReportItem.setTaxList(modifier.getTaxList());
-								modifierList.add(modifierReportItem);
-
-//								modifierMap.put(key, modifierReportItem);
-							}
-							modifierReportItem.setQuantity(modifierReportItem.getQuantity() + 1);
-							// modifierReportItem.setTotal(modifierReportItem.getTotal()
-							// + modifier.getTotal());
+			} else {
+				HashMap<String, MenuItemDetail> menuItemMap = new HashMap<String, MenuItemDetail>();
+				for (int j = start; j < i; j++) {
+					Ticket t1 = tickets.get(j);
+					List<TicketItem> items = t1.getTicketItems();
+					for (TicketItem a : items) {
+						String menuItemName = a.getName().trim();
+						if (!menuItemMap.containsKey(menuItemName)) {
+							MenuItemDetail m1 = new MenuItemDetail(1, a.getDiscountAmount(), a.getTaxAmount(), a.getSubtotalAmount(), a.getTotalAmount());
+							menuItemMap.put(menuItemName, m1);
+						} else {
+							MenuItemDetail m2 = menuItemMap.get(menuItemName);
+							m2.add(a);
+							menuItemMap.put(a.getCategoryName(), m2);
 						}
 					}
 				}
+				start = i;
+				startDate = ticketDt1;
+				MenuItemDetailReportItem mdri = new MenuItemDetailReportItem();
+				for (Map.Entry<String, MenuItemDetail> entry : menuItemMap.entrySet()) {
+					MenuItemDetail value = entry.getValue();
+
+					mdri.setDate(startDate);
+					mdri.setMenuName(entry.getKey());
+					mdri.setDiscount(value.getDiscount());
+					mdri.setPrice(value.getPrice());
+					mdri.setQuantity(value.getQuantity());
+					mdri.setTaxAmount(value.getTaxAmount());
+					mdri.setTotalAmount(value.getTotalAmount());
+				}
+
+				itemList.add(mdri);
 			}
-			ticket = null;
+
 		}
 		itemReportModel = new MenuItemDetailReportModel();
 		itemReportModel.setItems(itemList);
 		itemReportModel.calculateGrandTotal();
+	}
 
-		modifierReportModel = new MenuItemDetailReportModel();
-		modifierReportModel.setItems(modifierList);
-		modifierReportModel.calculateGrandTotal();
+	class MenuItemDetail {
+
+		private int quantity;
+		private double discount;
+		private double taxAmount;
+		private double price;
+		private double totalAmount;
+
+		public int getQuantity() {
+			return quantity;
+		}
+
+		public void setQuantity(int quantity) {
+			this.quantity = quantity;
+		}
+
+		public double getDiscount() {
+			return discount;
+		}
+
+		public void setDiscount(double discount) {
+			this.discount = discount;
+		}
+
+		public double getTaxAmount() {
+			return taxAmount;
+		}
+
+		public void setTaxAmount(double taxAmount) {
+			this.taxAmount = taxAmount;
+		}
+
+		public double getPrice() {
+			return price;
+		}
+
+		public void setPrice(double price) {
+			this.price = price;
+		}
+
+		public double getTotalAmount() {
+			return totalAmount;
+		}
+
+		public void setTotalAmount(double totalAmount) {
+			this.totalAmount = totalAmount;
+		}
+
+		public void add(MenuItemDetail m) {
+			this.quantity += m.quantity;
+			this.discount += m.discount;
+			this.taxAmount += m.taxAmount;
+			this.price += m.price;
+			this.totalAmount += m.totalAmount;
+		}
+
+		public void add(TicketItem t) {
+			this.quantity += t.getItemCount();
+			this.discount += t.getDiscountAmount();
+			this.taxAmount += t.getTaxAmount();
+			this.price += t.getSubtotalAmount();
+			this.totalAmount += t.getTotalAmount();
+		}
+
+		public MenuItemDetail(int qty, double disc, double taxAmt, double price, double totalAmt) {
+			this.quantity = qty;
+			this.discount = disc;
+			this.taxAmount = taxAmt;
+			this.price = price;
+			this.totalAmount = totalAmt;
+		}
+
+		public MenuItemDetail() {
+		}
+
 	}
 }
