@@ -33,6 +33,10 @@ import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 import net.sf.jasperreports.view.JRViewer;
 
 public class SalesDetailReportView extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9072846226470019897L;
 	private SimpleDateFormat fullDateFormatter = new SimpleDateFormat("yyyy MMM dd, hh:mm a");
 	private SimpleDateFormat shortDateFormatter = new SimpleDateFormat("yyyy MMM dd");
 	private final static String USER_REPORT_DIR = "/com/ororeport/salesreport/template/";
@@ -41,28 +45,28 @@ public class SalesDetailReportView extends JPanel {
 	private JXDatePicker toDatePicker = UiUtil.getCurrentMonthEnd();
 	private JButton btnGo = new JButton(com.floreantpos.POSConstants.GO);
 	private JPanel reportContainer;
-	
+
 	public SalesDetailReportView() {
 		super(new BorderLayout());
-		
+
 		JPanel topPanel = new JPanel(new MigLayout());
-		
+
 		topPanel.add(new JLabel(com.floreantpos.POSConstants.FROM + ":"), "grow");
-		topPanel.add(fromDatePicker,"wrap");
+		topPanel.add(fromDatePicker, "wrap");
 		topPanel.add(new JLabel(com.floreantpos.POSConstants.TO + ":"), "grow");
-		topPanel.add(toDatePicker,"wrap");
+		topPanel.add(toDatePicker, "wrap");
 		topPanel.add(btnGo, "skip 1, al right");
 		add(topPanel, BorderLayout.NORTH);
-		
+
 		JPanel centerPanel = new JPanel(new BorderLayout());
-		centerPanel.setBorder(new EmptyBorder(0, 10,10,10));
+		centerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
 		centerPanel.add(new JSeparator(), BorderLayout.NORTH);
-		
+
 		reportContainer = new JPanel(new BorderLayout());
 		centerPanel.add(reportContainer);
-		
+
 		add(centerPanel);
-		
+
 		btnGo.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -72,28 +76,28 @@ public class SalesDetailReportView extends JPanel {
 					POSMessageDialog.showError(SalesDetailReportView.this, POSConstants.ERROR_MESSAGE, e1);
 				}
 			}
-			
+
 		});
 	}
-	
+
 	private void viewReport() throws Exception {
 		Date fromDate = fromDatePicker.getDate();
 		Date toDate = toDatePicker.getDate();
-		
-		if(fromDate.after(toDate)) {
+
+		if (fromDate.after(toDate)) {
 			POSMessageDialog.showError(BackOfficeWindow.getInstance(), com.floreantpos.POSConstants.FROM_DATE_CANNOT_BE_GREATER_THAN_TO_DATE_);
 			return;
 		}
-		
+
 		fromDate = DateUtil.startOfDay(fromDate);
 		toDate = DateUtil.endOfDay(toDate);
-		
+
 		ReportService reportService = new ReportService();
 		SalesDetailedReport report = reportService.getSalesDetailedReport(fromDate, toDate);
-		
-		JasperReport drawerPullReport = ReportUtil.getReport("sales_summary_balance_detailed__1",USER_REPORT_DIR);
-		JasperReport creditCardReport = ReportUtil.getReport("sales_summary_balance_detailed_2",USER_REPORT_DIR);
-		
+
+		JasperReport drawerPullReport = ReportUtil.getReport("sales_summary_balance_detailed__1", USER_REPORT_DIR);
+		JasperReport creditCardReport = ReportUtil.getReport("sales_summary_balance_detailed_2", USER_REPORT_DIR);
+
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
 		map.put("fromDate", shortDateFormatter.format(fromDate));
@@ -110,13 +114,13 @@ public class SalesDetailReportView extends JPanel {
 		map.put("drawerPullDatasource", new JRTableModelDataSource(report.getDrawerPullDataTableModel()));
 		map.put("creditCardReport", creditCardReport);
 		map.put("creditCardReportDatasource", new JRTableModelDataSource(report.getCreditCardDataTableModel()));
-		
-		JasperReport jasperReport = ReportUtil.getReport("sales_summary_balace_detail",USER_REPORT_DIR);
+
+		JasperReport jasperReport = ReportUtil.getReport("sales_summary_balace_detail", USER_REPORT_DIR);
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, map, new JREmptyDataSource());
 		JRViewer viewer = new JRViewer(jasperPrint);
 		reportContainer.removeAll();
 		reportContainer.add(viewer);
 		reportContainer.revalidate();
-		
+
 	}
 }

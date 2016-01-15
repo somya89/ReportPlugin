@@ -36,11 +36,6 @@ public class SalesReportPlugin implements ReportPlugin {
 				new SalesDetailReportAction()};
 	}
 
-	@Override
-	public void addReportView(JTabbedPane tabbedPane) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public String getBaseMenuName() {
