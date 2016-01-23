@@ -1,4 +1,4 @@
-package com.ororeport.orderDetailReport;
+package com.ororeport.voidDetailReport;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -11,16 +11,16 @@ import com.floreantpos.main.Application;
  * @author SOMYA
  * 
  */
-public class OrderDetailReportModel extends AbstractTableModel {
+public class VoidDetailReportModel extends AbstractTableModel {
 	private static final long serialVersionUID = 4491925433507335878L;
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
 	private String[] columnNames = { "Ticket", "Date", "Name", "Qty", "Base Price", "Discount", "Tax Amount", "Total Amount" };
-	private List<OrderDetailReportItem> items;
+	private List<VoidDetailReportItem> items;
 	private double grandTotal;
 
-	public OrderDetailReportModel() {
+	public VoidDetailReportModel() {
 		super();
 		currencySymbol = Application.getCurrencySymbol();
 	}
@@ -43,7 +43,7 @@ public class OrderDetailReportModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		OrderDetailReportItem item = items.get(rowIndex);
+		VoidDetailReportItem item = items.get(rowIndex);
 
 		switch (columnIndex) {
 		case 0:
@@ -67,11 +67,11 @@ public class OrderDetailReportModel extends AbstractTableModel {
 		return null;
 	}
 
-	public List<OrderDetailReportItem> getItems() {
+	public List<VoidDetailReportItem> getItems() {
 		return items;
 	}
 
-	public void setItems(List<OrderDetailReportItem> items) {
+	public void setItems(List<VoidDetailReportItem> items) {
 		this.items = items;
 	}
 
@@ -93,7 +93,7 @@ public class OrderDetailReportModel extends AbstractTableModel {
 			return;
 		}
 
-		for (OrderDetailReportItem item : items) {
+		for (VoidDetailReportItem item : items) {
 			grandTotal += item.getPrice();
 		}
 	}

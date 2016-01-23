@@ -1,4 +1,4 @@
-package com.ororeport.orderDetailReport;
+package com.ororeport.voidDetailReport;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,12 +31,12 @@ import com.floreantpos.ui.util.TicketUtils;
  * @author SOMYA
  *
  */
-public class OrderDetailedReport extends Report {
-	private OrderDetailReportModel itemReportModel;
-	private OrderDetailReportModel modifierReportModel;
-	private final static String USER_REPORT_DIR = "/com/ororeport/orderDetailReport/template/";
+public class VoidDetailedReport extends Report {
+	private VoidDetailReportModel itemReportModel;
+	private VoidDetailReportModel modifierReportModel;
+	private final static String USER_REPORT_DIR = "/com/ororeport/voidDetailReport/template/";
 
-	public OrderDetailedReport() {
+	public VoidDetailedReport() {
 		super();
 	}
 
@@ -44,15 +44,15 @@ public class OrderDetailedReport extends Report {
 	public void refresh() throws Exception {
 		createModels();
 
-		OrderDetailReportModel itemReportModel = this.itemReportModel;
-		OrderDetailReportModel modifierReportModel = this.modifierReportModel;
+		VoidDetailReportModel itemReportModel = this.itemReportModel;
+		VoidDetailReportModel modifierReportModel = this.modifierReportModel;
 
-		JasperReport itemReport = ReportUtil.getReport("order_sub_report", USER_REPORT_DIR, this.getClass());
-		JasperReport modifierReport = ReportUtil.getReport("order_sub_report", USER_REPORT_DIR, this.getClass());
+		JasperReport itemReport = ReportUtil.getReport("void_report", USER_REPORT_DIR, this.getClass());
+		JasperReport modifierReport = ReportUtil.getReport("void_report", USER_REPORT_DIR, this.getClass());
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Order Detail Report");
+		map.put("reportType", "VOID Detail Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatShortDate(getStartDate()) + " to " + ReportService.formatShortDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -87,11 +87,11 @@ public class OrderDetailedReport extends Report {
 		Date date1 = DateUtils.startOfDay(getStartDate());
 		Date date2 = DateUtils.endOfDay(getEndDate());
 
-		List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, date2);
-		HashMap<String, OrderDetailReportItem> itemMap = new HashMap<String, OrderDetailReportItem>();
-		HashMap<String, OrderDetailReportItem> modifierMap = new HashMap<String, OrderDetailReportItem>();
-		List<OrderDetailReportItem> itemList = new ArrayList<OrderDetailReportItem>();
-		List<OrderDetailReportItem> modifierList = new ArrayList<OrderDetailReportItem>();
+		List<Ticket> tickets = TicketDAO.getInstance().findVoidTickets(date1, date2);
+		HashMap<String, VoidDetailReportItem> itemMap = new HashMap<String, VoidDetailReportItem>();
+		HashMap<String, VoidDetailReportItem> modifierMap = new HashMap<String, VoidDetailReportItem>();
+		List<VoidDetailReportItem> itemList = new ArrayList<VoidDetailReportItem>();
+		List<VoidDetailReportItem> modifierList = new ArrayList<VoidDetailReportItem>();
 		
 		String startDate = null;
 		String ticketDate = null;
@@ -100,7 +100,7 @@ public class OrderDetailedReport extends Report {
 			Ticket ticket = TicketDAO.getInstance().loadFullTicket(t.getId());
 			ticketDate = ticket.getCreateDateFormatted();
 			if(!ticketDate.equals(startDate)){
-				OrderDetailReportItem reportItem = new OrderDetailReportItem();
+				VoidDetailReportItem reportItem = new VoidDetailReportItem();
 				reportItem.setDate(ticketDate);
 				reportItem.setTicketId(null);
 				reportItem.setDiscount(null);
@@ -124,10 +124,11 @@ public class OrderDetailedReport extends Report {
 				} else {
 					key = ticketItem.getItemId().toString();
 				}
-				OrderDetailReportItem reportItem = itemMap.get(key);
+				VoidDetailReportItem reportItem = itemMap.get(key);
 				MenuItem mi = MenuItemDAO.getInstance().findByItemId(ticketItem.getItemId());
 				if (reportItem == null) {
-					reportItem = new OrderDetailReportItem();
+					reportItem = new VoidDetailReportItem();
+					reportItem.setId(key);
 					if (first) {
 						reportItem.setTicketId(TicketUtils.getTicketNumber(ticket));
 						reportItem.setDate(ticket.getCreateDateFormatted());
@@ -138,8 +139,10 @@ public class OrderDetailedReport extends Report {
 						reportItem.setDate(null);
 					}
 					reportItem.setPrice(ticketItem.getUnitPrice());
+					reportItem.setBuyPrice(mi.getBuyPrice());
 					reportItem.setProfit(ticketItem.getUnitPrice() - mi.getBuyPrice());
 					reportItem.setName(ticketItem.getName());
+					reportItem.setTaxList(ticketItem.getTaxList());
 					reportItem.setTaxAmount(ticketItem.getTaxAmount());
 					reportItem.setDiscount(ticketItem.getDiscountAmount());
 					reportItem.setQuantity(ticketItem.getItemCount());
@@ -159,12 +162,14 @@ public class OrderDetailedReport extends Report {
 							} else {
 								key = modifier.getItemId().toString();
 							}
-							OrderDetailReportItem modifierReportItem = modifierMap.get(key);
+							VoidDetailReportItem modifierReportItem = modifierMap.get(key);
 							if (modifierReportItem == null) {
-								modifierReportItem = new OrderDetailReportItem();
+								modifierReportItem = new VoidDetailReportItem();
+								modifierReportItem.setId(key);
 								modifierReportItem.setPrice(modifier.getUnitPrice());
 								modifierReportItem.setName(modifier.getName());
 								// modifierReportItem.setTaxRate(modifier.getTaxRate());
+								modifierReportItem.setTaxList(modifier.getTaxList());
 								modifierList.add(modifierReportItem);
 
 //								modifierMap.put(key, modifierReportItem);
@@ -178,11 +183,11 @@ public class OrderDetailedReport extends Report {
 			}
 			ticket = null;
 		}
-		itemReportModel = new OrderDetailReportModel();
+		itemReportModel = new VoidDetailReportModel();
 		itemReportModel.setItems(itemList);
 		//itemReportModel.calculateGrandTotal();
 
-		modifierReportModel = new OrderDetailReportModel();
+		modifierReportModel = new VoidDetailReportModel();
 		modifierReportModel.setItems(modifierList);
 		//modifierReportModel.calculateGrandTotal();
 	}

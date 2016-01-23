@@ -1,6 +1,8 @@
 package com.ororeport.menuItemDetailReport;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,18 +22,14 @@ import com.floreantpos.model.MenuItem;
 import com.floreantpos.model.RecepieItem;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketItem;
-import com.floreantpos.model.TicketItemModifier;
-import com.floreantpos.model.TicketItemModifierGroup;
 import com.floreantpos.model.dao.MenuItemDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.report.Report;
 import com.floreantpos.report.ReportUtil;
 import com.floreantpos.report.service.ReportService;
-import com.floreantpos.ui.util.TicketUtils;
 
 public class MenuItemDetailedReport extends Report {
 	private MenuItemDetailReportModel itemReportModel;
-	private MenuItemDetailReportModel modifierReportModel;
 	private final static String USER_REPORT_DIR = "/com/ororeport/menuItemDetailReport/template/";
 
 	public MenuItemDetailedReport() {
@@ -43,24 +41,18 @@ public class MenuItemDetailedReport extends Report {
 		createModels();
 
 		MenuItemDetailReportModel itemReportModel = this.itemReportModel;
-		MenuItemDetailReportModel modifierReportModel = this.modifierReportModel;
-
 		JasperReport itemReport = ReportUtil.getReport("menu_item_sub_report", USER_REPORT_DIR, this.getClass());
-		JasperReport modifierReport = ReportUtil.getReport("menu_item_sub_report", USER_REPORT_DIR, this.getClass());
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportTitle", "============================ Menu Item Detail Report ===============================");
+		map.put("reportType", "Menu Item Detail Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatShortDate(getStartDate()) + " to " + ReportService.formatShortDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
 		map.put("itemDataSource", new JRTableModelDataSource(itemReportModel));
-		map.put("modifierDataSource", new JRTableModelDataSource(modifierReportModel));
 		map.put("currencySymbol", Application.getCurrencySymbol());
 		map.put("itemGrandTotal", itemReportModel.getGrandTotalAsString());
-		map.put("modifierGrandTotal", modifierReportModel.getGrandTotalAsString());
 		map.put("itemReport", itemReport);
-		map.put("modifierReport", modifierReport);
 
 		JasperReport masterReport = ReportUtil.getReport("report_template", USER_REPORT_DIR, this.getClass());
 
@@ -106,56 +98,48 @@ public class MenuItemDetailedReport extends Report {
 	public void createModels() {
 		Date date1 = DateUtils.startOfDay(getStartDate());
 		Date date2 = DateUtils.endOfDay(getEndDate());
-
-		List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, date2);
-		refreshBuyPrice();
 		List<MenuItemDetailReportItem> itemList = new ArrayList<MenuItemDetailReportItem>();
-		String startDate = null;
-		if (tickets.get(0) != null) {
-			startDate = TicketDAO.getInstance().loadFullTicket(tickets.get(0).getId()).getCreateDateFormatted();
-		}
-		int start = 0;
-		for (int i = 0; i < tickets.size(); i++) {
-			Ticket t = TicketDAO.getInstance().loadFullTicket(tickets.get(i).getId());
-			String ticketDt1 = t.getCreateDateFormatted();
-			if (startDate.equals(ticketDt1) && i != tickets.size() - 1) {
-				continue;
-			} else {
-				HashMap<String, MenuItemDetail> menuItemMap = new HashMap<String, MenuItemDetail>();
-				for (int j = start; j < i; j++) {
-					Ticket t1 = tickets.get(j);
-					List<TicketItem> items = t1.getTicketItems();
-					for (TicketItem a : items) {
-						String menuItemName = a.getName().trim();
-						if (!menuItemMap.containsKey(menuItemName)) {
-							MenuItemDetail m1 = new MenuItemDetail(1, a.getDiscountAmount(), a.getTaxAmount(), a.getSubtotalAmount(), a.getTotalAmount());
-							menuItemMap.put(menuItemName, m1);
-						} else {
-							MenuItemDetail m2 = menuItemMap.get(menuItemName);
-							m2.add(a);
-							menuItemMap.put(a.getCategoryName(), m2);
-						}
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
+
+		for (; date1.after(date2) == false;) {
+			Calendar c = Calendar.getInstance();
+			c.setTime(date1);
+			c.add(Calendar.DATE, 1); // number of days to add
+			Date d3 = c.getTime();
+			List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, d3);
+			HashMap<String, MenuItemDetail> menuItemMap = new HashMap<String, MenuItemDetail>();
+			
+			for (int i = 0; i < tickets.size(); i++) {
+				Ticket t = TicketDAO.getInstance().loadFullTicket(tickets.get(i).getId());
+
+				List<TicketItem> items = t.getTicketItems();
+				for (TicketItem a : items) {
+					String menuItemName = a.getName().trim();
+					if (!menuItemMap.containsKey(menuItemName)) {
+						MenuItemDetail m1 = new MenuItemDetail(1, a.getDiscountAmount(), a.getTaxAmount(), a.getSubtotalAmount(), a.getTotalAmount());
+						menuItemMap.put(menuItemName, m1);
+					} else {
+						MenuItemDetail m2 = menuItemMap.get(menuItemName);
+						m2.add(a);
+						menuItemMap.put(menuItemName, m2);
 					}
 				}
-				start = i;
-				startDate = ticketDt1;
+			}
+			for (Map.Entry<String, MenuItemDetail> entry : menuItemMap.entrySet()) {
+				MenuItemDetail value = entry.getValue();
 				MenuItemDetailReportItem mdri = new MenuItemDetailReportItem();
-				for (Map.Entry<String, MenuItemDetail> entry : menuItemMap.entrySet()) {
-					MenuItemDetail value = entry.getValue();
-
-					mdri.setDate(startDate);
-					mdri.setMenuName(entry.getKey());
-					mdri.setDiscount(value.getDiscount());
-					mdri.setPrice(value.getPrice());
-					mdri.setQuantity(value.getQuantity());
-					mdri.setTaxAmount(value.getTaxAmount());
-					mdri.setTotalAmount(value.getTotalAmount());
-				}
-
+				mdri.setDate(dateFormat.format(date1));
+				mdri.setMenuName(entry.getKey());
+				mdri.setDiscount(value.getDiscount());
+				mdri.setPrice(value.getPrice());
+				mdri.setQuantity(value.getQuantity());
+				mdri.setTaxAmount(value.getTaxAmount());
+				mdri.setTotalAmount(value.getTotalAmount());
 				itemList.add(mdri);
 			}
-
+			date1 = d3;
 		}
+
 		itemReportModel = new MenuItemDetailReportModel();
 		itemReportModel.setItems(itemList);
 		itemReportModel.calculateGrandTotal();
