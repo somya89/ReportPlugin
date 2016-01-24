@@ -1,9 +1,8 @@
-package com.ororeport.menuItemDetailReport;
+package com.ororeport.categoryDetailReport;
 
-public class MenuItemDetailReportItem {
+public class CategoryDetailReportItem {
 	private String date;
-	private String menuName;
-	private Double basePrice;
+	private String categoryName;
 	private double price;
 	private double totalAmount;
 	private Integer quantity;
@@ -20,12 +19,12 @@ public class MenuItemDetailReportItem {
 
 	private double discount;
 
-	public String getMenuName() {
-		return menuName;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public void setMenuName(String menuName) {
-		this.menuName = menuName;
+	public void setCategoryName(String catName) {
+		this.categoryName = catName;
 	}
 
 	public double getPrice() {
@@ -36,7 +35,7 @@ public class MenuItemDetailReportItem {
 		this.price = price;
 	}
 
-	public MenuItemDetailReportItem() {
+	public CategoryDetailReportItem() {
 		super();
 	}
 
@@ -78,14 +77,6 @@ public class MenuItemDetailReportItem {
 
 	public void setVatTax(double vatTax) {
 		this.vatTax = vatTax;
-	}
-
-	public Double getBasePrice() {
-		return basePrice;
-	}
-
-	public void setBasePrice(Double basePrice) {
-		this.basePrice = basePrice;
 	}
 
 }

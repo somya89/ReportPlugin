@@ -1,4 +1,4 @@
-package com.ororeport.menuItemDetailReport;
+package com.ororeport.groupDetailReport;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ import com.floreantpos.report.Report;
 import com.floreantpos.report.ReportUtil;
 import com.floreantpos.report.service.ReportService;
 
-public class MenuItemDetailedReport extends Report {
-	private MenuItemDetailReportModel itemReportModel;
-	private final static String USER_REPORT_DIR = "/com/ororeport/menuItemDetailReport/template/";
+public class GroupDetailedReport extends Report {
+	private GroupDetailReportModel itemReportModel;
+	private final static String USER_REPORT_DIR = "/com/ororeport/groupDetailReport/template/";
 
-	public MenuItemDetailedReport() {
+	public GroupDetailedReport() {
 		super();
 	}
 
@@ -37,12 +37,12 @@ public class MenuItemDetailedReport extends Report {
 	public void refresh() throws Exception {
 		createModels();
 
-		MenuItemDetailReportModel itemReportModel = this.itemReportModel;
-		JasperReport itemReport = ReportUtil.getReport("menu_item_sub_report", USER_REPORT_DIR, this.getClass());
+		GroupDetailReportModel itemReportModel = this.itemReportModel;
+		JasperReport itemReport = ReportUtil.getReport("group_report", USER_REPORT_DIR, this.getClass());
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Menu Item Detail Report");
+		map.put("reportType", "Menu Group Detail Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatShortDate(getStartDate()) + " to " + ReportService.formatShortDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -70,13 +70,12 @@ public class MenuItemDetailedReport extends Report {
 	public void createModels() {
 		Date date1 = DateUtils.startOfDay(getStartDate());
 		Date date2 = DateUtils.endOfDay(getEndDate());
-		List<MenuItemDetailReportItem> itemList = new ArrayList<MenuItemDetailReportItem>();
+		List<GroupDetailReportItem> itemList = new ArrayList<GroupDetailReportItem>();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
 
-		MenuItemDetailReportItem grandTotalReportItem = new MenuItemDetailReportItem();
+		GroupDetailReportItem grandTotalReportItem = new GroupDetailReportItem();
 		grandTotalReportItem.setDate("");
-		grandTotalReportItem.setMenuName("** GRAND TOTAL**");
-		grandTotalReportItem.setBasePrice(null);
+		grandTotalReportItem.setGroupName("** GRAND TOTAL**");
 		grandTotalReportItem.setDiscount(0.0);
 		grandTotalReportItem.setPrice(0.0);
 		grandTotalReportItem.setQuantity(null);
@@ -90,37 +89,35 @@ public class MenuItemDetailedReport extends Report {
 			c.add(Calendar.DATE, 1); // number of days to add
 			Date d3 = c.getTime();
 			List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, d3);
-			HashMap<String, MenuItemDetail> menuItemMap = new HashMap<String, MenuItemDetail>();
+			HashMap<String, GroupDetail> groupMap = new HashMap<String, GroupDetail>();
 
 			for (int i = 0; i < tickets.size(); i++) {
 				Ticket t = TicketDAO.getInstance().loadFullTicket(tickets.get(i).getId());
 				List<TicketItem> items = t.getTicketItems();
 				for (TicketItem a : items) {
-					String menuItemName = a.getName().trim();
-					if (!menuItemMap.containsKey(menuItemName)) {
-						MenuItemDetail m1 = new MenuItemDetail(a.getItemCount(), a.getDiscountAmount(), a.getVatTaxAmount(), a.getServiceTaxAmount(), a.getSubtotalAmount(), a.getTotalAmount());
-						menuItemMap.put(menuItemName, m1);
+					String groupName = a.getGroupName().trim();
+					if (!groupMap.containsKey(groupName)) {
+						GroupDetail m1 = new GroupDetail(a.getItemCount(), a.getDiscountAmount(), a.getVatTaxAmount(), a.getServiceTaxAmount(), a.getSubtotalAmount(), a.getTotalAmount());
+						groupMap.put(groupName, m1);
 					} else {
-						MenuItemDetail m2 = menuItemMap.get(menuItemName);
+						GroupDetail m2 = groupMap.get(groupName);
 						m2.add(a);
-						menuItemMap.put(menuItemName, m2);
+						groupMap.put(groupName, m2);
 					}
 				}
 			}
 
-			for (Map.Entry<String, MenuItemDetail> entry : menuItemMap.entrySet()) {
-				MenuItemDetail value = entry.getValue();
-				MenuItemDetailReportItem mdri = new MenuItemDetailReportItem();
-				mdri.setDate(dateFormat.format(date1));
-				mdri.setMenuName(entry.getKey());
-				mdri.setBasePrice(value.getPrice() / value.getQuantity());
-
-				mdri.setDiscount(value.getDiscount());
-				mdri.setPrice(value.getPrice());
-				mdri.setQuantity(value.getQuantity());
-				mdri.setVatTax(value.getVatTaxAmount());
-				mdri.setSvcTax(value.getSvcTaxAmount());
-				mdri.setTotalAmount(value.getTotalAmount());
+			for (Map.Entry<String, GroupDetail> entry : groupMap.entrySet()) {
+				GroupDetail value = entry.getValue();
+				GroupDetailReportItem cdri = new GroupDetailReportItem();
+				cdri.setDate(dateFormat.format(date1));
+				cdri.setGroupName(entry.getKey());
+				cdri.setDiscount(value.getDiscount());
+				cdri.setPrice(value.getPrice());
+				cdri.setQuantity(value.getQuantity());
+				cdri.setVatTax(value.getVatTaxAmount());
+				cdri.setSvcTax(value.getSvcTaxAmount());
+				cdri.setTotalAmount(value.getTotalAmount());
 
 				grandTotalReportItem.setDiscount(grandTotalReportItem.getDiscount() + value.getDiscount());
 				grandTotalReportItem.setPrice(grandTotalReportItem.getPrice() + value.getPrice());
@@ -128,17 +125,17 @@ public class MenuItemDetailedReport extends Report {
 				grandTotalReportItem.setSvcTax(grandTotalReportItem.getSvcTax() + value.getSvcTaxAmount());
 				grandTotalReportItem.setTotalAmount(grandTotalReportItem.getTotalAmount() + value.getTotalAmount());
 
-				itemList.add(mdri);
+				itemList.add(cdri);
 			}
 			date1 = d3;
 		}
 		itemList.add(grandTotalReportItem);
-		itemReportModel = new MenuItemDetailReportModel();
+		itemReportModel = new GroupDetailReportModel();
 		itemReportModel.setItems(itemList);
 		itemReportModel.calculateGrandTotal();
 	}
 
-	class MenuItemDetail {
+	class GroupDetail {
 
 		private int quantity;
 		private double discount;
@@ -195,7 +192,7 @@ public class MenuItemDetailedReport extends Report {
 			this.svcTaxAmount = svcTaxAmount;
 		}
 
-		public void add(MenuItemDetail m) {
+		public void add(GroupDetail m) {
 			this.quantity += m.quantity;
 			this.discount += m.discount;
 			this.vatTaxAmount += m.vatTaxAmount;
@@ -213,7 +210,7 @@ public class MenuItemDetailedReport extends Report {
 			this.totalAmount += t.getTotalAmount();
 		}
 
-		public MenuItemDetail(int qty, double disc, double vatTax, double svcTax, double price, double totalAmt) {
+		public GroupDetail(int qty, double disc, double vatTax, double svcTax, double price, double totalAmt) {
 			this.quantity = qty;
 			this.discount = disc;
 			this.vatTaxAmount += vatTax;
@@ -222,7 +219,7 @@ public class MenuItemDetailedReport extends Report {
 			this.totalAmount = totalAmt;
 		}
 
-		public MenuItemDetail() {
+		public GroupDetail() {
 		}
 
 	}

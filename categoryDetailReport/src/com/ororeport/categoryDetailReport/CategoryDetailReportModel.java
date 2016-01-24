@@ -1,4 +1,4 @@
-package com.ororeport.menuItemDetailReport;
+package com.ororeport.categoryDetailReport;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.floreantpos.main.Application;
 
-public class MenuItemDetailReportModel extends AbstractTableModel {
+public class CategoryDetailReportModel extends AbstractTableModel {
 	/**
 	 * 
 	 */
@@ -15,11 +15,11 @@ public class MenuItemDetailReportModel extends AbstractTableModel {
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Date", "Menu Item Name", "Base_Price", "Qty", "Amount", "Discount", "VAT", "SVC_Tax", "Total Amount" };
-	private List<MenuItemDetailReportItem> items;
+	private String[] columnNames = { "Date", "Category Name", "Qty", "Amount", "Discount", "VAT", "SVC_Tax", "Total Amount" };
+	private List<CategoryDetailReportItem> items;
 	private double grandTotal;
 
-	public MenuItemDetailReportModel() {
+	public CategoryDetailReportModel() {
 		super();
 		currencySymbol = Application.getCurrencySymbol();
 	}
@@ -42,37 +42,35 @@ public class MenuItemDetailReportModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		MenuItemDetailReportItem item = items.get(rowIndex);
+		CategoryDetailReportItem item = items.get(rowIndex);
 
 		switch (columnIndex) {
 		case 0:
 			return item.getDate() != null ? item.getDate() : "";
 		case 1:
-			return item.getMenuName();
+			return item.getCategoryName();
 		case 2:
-			return item.getBasePrice() != null ? currencySymbol + " " + formatter.format(item.getBasePrice()) : "";
-		case 3:
 			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
-		case 4:
+		case 3:
 			return currencySymbol + " " + formatter.format(item.getPrice());
-		case 5:
+		case 4:
 			return currencySymbol + " " + formatter.format(item.getDiscount());
-		case 6:
+		case 5:
 			return currencySymbol + " " + formatter.format(item.getVatTax());
-		case 7:
+		case 6:
 			return currencySymbol + " " + formatter.format(item.getSvcTax());
-		case 8:
+		case 7:
 			return currencySymbol + " " + formatter.format(item.getTotalAmount());
 		}
 
 		return null;
 	}
 
-	public List<MenuItemDetailReportItem> getItems() {
+	public List<CategoryDetailReportItem> getItems() {
 		return items;
 	}
 
-	public void setItems(List<MenuItemDetailReportItem> items) {
+	public void setItems(List<CategoryDetailReportItem> items) {
 		this.items = items;
 	}
 
@@ -94,7 +92,7 @@ public class MenuItemDetailReportModel extends AbstractTableModel {
 			return;
 		}
 
-		for (MenuItemDetailReportItem item : items) {
+		for (CategoryDetailReportItem item : items) {
 			grandTotal += item.getPrice();
 		}
 	}
