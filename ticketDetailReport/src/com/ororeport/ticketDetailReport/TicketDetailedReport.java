@@ -34,7 +34,7 @@ import com.floreantpos.ui.util.TicketUtils;
 public class TicketDetailedReport extends Report {
 	private VoidDetailReportModel itemReportModel;
 	private VoidDetailReportModel modifierReportModel;
-	private final static String USER_REPORT_DIR = "/com/ororeport/voidDetailReport/template/";
+	private final static String USER_REPORT_DIR = "/com/ororeport/ticketDetailReport/template/";
 
 	public TicketDetailedReport() {
 		super();
@@ -47,12 +47,12 @@ public class TicketDetailedReport extends Report {
 		VoidDetailReportModel itemReportModel = this.itemReportModel;
 		VoidDetailReportModel modifierReportModel = this.modifierReportModel;
 
-		JasperReport itemReport = ReportUtil.getReport("void_report", USER_REPORT_DIR, this.getClass());
-		JasperReport modifierReport = ReportUtil.getReport("void_report", USER_REPORT_DIR, this.getClass());
+		JasperReport itemReport = ReportUtil.getReport("ticket_report", USER_REPORT_DIR, this.getClass());
+		JasperReport modifierReport = ReportUtil.getReport("ticket_report", USER_REPORT_DIR, this.getClass());
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Void Ticket Detail Report");
+		map.put("reportType", "Ticket Detail Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatShortDate(getStartDate()) + " to " + ReportService.formatShortDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -87,7 +87,7 @@ public class TicketDetailedReport extends Report {
 		Date date1 = DateUtils.startOfDay(getStartDate());
 		Date date2 = DateUtils.endOfDay(getEndDate());
 
-		List<Ticket> tickets = TicketDAO.getInstance().findVoidTickets(date1, date2);
+		List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, date2);
 		HashMap<String, TicketDetailReportItem> itemMap = new HashMap<String, TicketDetailReportItem>();
 		HashMap<String, TicketDetailReportItem> modifierMap = new HashMap<String, TicketDetailReportItem>();
 		List<TicketDetailReportItem> itemList = new ArrayList<TicketDetailReportItem>();
