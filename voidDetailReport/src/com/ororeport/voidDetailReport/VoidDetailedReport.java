@@ -32,9 +32,9 @@ import com.floreantpos.ui.util.TicketUtils;
  *
  */
 public class VoidDetailedReport extends Report {
-	private VoidDetailReportModel itemReportModel;
-	private VoidDetailReportModel modifierReportModel;
-	private final static String USER_REPORT_DIR = "/com/ororeport/voidDetailReport/template/";
+	private VoidReportModel itemReportModel;
+	private VoidReportModel modifierReportModel;
+	private final static String USER_REPORT_DIR = "/com/ororeport/ticketDetailReport/template/";
 
 	public VoidDetailedReport() {
 		super();
@@ -44,15 +44,15 @@ public class VoidDetailedReport extends Report {
 	public void refresh() throws Exception {
 		createModels();
 
-		VoidDetailReportModel itemReportModel = this.itemReportModel;
-		VoidDetailReportModel modifierReportModel = this.modifierReportModel;
+		VoidReportModel itemReportModel = this.itemReportModel;
+		VoidReportModel modifierReportModel = this.modifierReportModel;
 
-		JasperReport itemReport = ReportUtil.getReport("void_report", USER_REPORT_DIR, this.getClass());
-		JasperReport modifierReport = ReportUtil.getReport("void_report", USER_REPORT_DIR, this.getClass());
+		JasperReport itemReport = ReportUtil.getReport("ticket_report", USER_REPORT_DIR, this.getClass());
+		JasperReport modifierReport = ReportUtil.getReport("ticket_report", USER_REPORT_DIR, this.getClass());
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "VOID Detail Report");
+		map.put("reportType", "Ticket Detail Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatShortDate(getStartDate()) + " to " + ReportService.formatShortDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -87,7 +87,7 @@ public class VoidDetailedReport extends Report {
 		Date date1 = DateUtils.startOfDay(getStartDate());
 		Date date2 = DateUtils.endOfDay(getEndDate());
 
-		List<Ticket> tickets = TicketDAO.getInstance().findVoidTickets(date1, date2);
+		List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, date2);
 		HashMap<String, VoidDetailReportItem> itemMap = new HashMap<String, VoidDetailReportItem>();
 		HashMap<String, VoidDetailReportItem> modifierMap = new HashMap<String, VoidDetailReportItem>();
 		List<VoidDetailReportItem> itemList = new ArrayList<VoidDetailReportItem>();
@@ -107,7 +107,8 @@ public class VoidDetailedReport extends Report {
 				reportItem.setBasePrice(null);
 				reportItem.setName(null);
 				reportItem.setQuantity(null);
-				reportItem.setTaxAmount(null);
+				reportItem.setVatTax(null);
+				reportItem.setSvcTax(null);
 				reportItem.setTotalAmount(null);
 				startDate = ticketDate;
 				itemList.add(reportItem);
@@ -128,7 +129,6 @@ public class VoidDetailedReport extends Report {
 				MenuItem mi = MenuItemDAO.getInstance().findByItemId(ticketItem.getItemId());
 				if (reportItem == null) {
 					reportItem = new VoidDetailReportItem();
-					reportItem.setId(key);
 					if (first) {
 						reportItem.setTicketId(TicketUtils.getTicketNumber(ticket));
 						reportItem.setDate(ticket.getCreateDateFormatted());
@@ -139,11 +139,10 @@ public class VoidDetailedReport extends Report {
 						reportItem.setDate(null);
 					}
 					reportItem.setPrice(ticketItem.getUnitPrice());
-					reportItem.setBuyPrice(mi.getBuyPrice());
 					reportItem.setProfit(ticketItem.getUnitPrice() - mi.getBuyPrice());
 					reportItem.setName(ticketItem.getName());
-					reportItem.setTaxList(ticketItem.getTaxList());
-					reportItem.setTaxAmount(ticketItem.getTaxAmount());
+					reportItem.setVatTax(ticketItem.getVatTaxAmount());
+					reportItem.setSvcTax(ticketItem.getServiceTaxAmount());
 					reportItem.setDiscount(ticketItem.getDiscountAmount());
 					reportItem.setQuantity(ticketItem.getItemCount());
 					reportItem.setTotalAmount(ticketItem.getTotalAmount());
@@ -165,11 +164,9 @@ public class VoidDetailedReport extends Report {
 							VoidDetailReportItem modifierReportItem = modifierMap.get(key);
 							if (modifierReportItem == null) {
 								modifierReportItem = new VoidDetailReportItem();
-								modifierReportItem.setId(key);
 								modifierReportItem.setPrice(modifier.getUnitPrice());
 								modifierReportItem.setName(modifier.getName());
 								// modifierReportItem.setTaxRate(modifier.getTaxRate());
-								modifierReportItem.setTaxList(modifier.getTaxList());
 								modifierList.add(modifierReportItem);
 
 //								modifierMap.put(key, modifierReportItem);
@@ -183,11 +180,11 @@ public class VoidDetailedReport extends Report {
 			}
 			ticket = null;
 		}
-		itemReportModel = new VoidDetailReportModel();
+		itemReportModel = new VoidReportModel();
 		itemReportModel.setItems(itemList);
 		//itemReportModel.calculateGrandTotal();
 
-		modifierReportModel = new VoidDetailReportModel();
+		modifierReportModel = new VoidReportModel();
 		modifierReportModel.setItems(modifierList);
 		//modifierReportModel.calculateGrandTotal();
 	}

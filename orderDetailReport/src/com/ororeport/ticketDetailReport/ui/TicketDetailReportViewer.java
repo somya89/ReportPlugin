@@ -4,7 +4,7 @@
  * Created on September 17, 2006, 11:38 PM
  */
 
-package com.ororeport.orderDetailReport.ui;
+package com.ororeport.ticketDetailReport.ui;
 
 import com.floreantpos.report.Report;
 import com.floreantpos.report.ReportViewer;
@@ -13,16 +13,16 @@ import com.floreantpos.report.ReportViewer;
  * @author SOMYA
  * 
  */
-public class OrderDetailReportViewer extends ReportViewer {
+public class TicketDetailReportViewer extends ReportViewer {
 
 	private static final long serialVersionUID = -4088107561589097998L;
 
-	public OrderDetailReportViewer() {
+	public TicketDetailReportViewer() {
 		super();
 		initComponents();
 	}
 
-	public OrderDetailReportViewer(Report report) {
+	public TicketDetailReportViewer(Report report) {
 		super(report);
 	}
 

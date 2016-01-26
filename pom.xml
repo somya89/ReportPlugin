@@ -11,7 +11,7 @@
 	</properties>
 
 	<modules>
-		<module>orderDetailReport</module>
+		<module>ticketDetailReport</module>
 		<module>dayWiseReport</module>
 		<module>voidDetailReport</module>
 		<module>menuItemDetailReport</module>

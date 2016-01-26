@@ -1,26 +1,20 @@
 package com.ororeport.voidDetailReport;
 
-import java.util.List;
-
-import com.floreantpos.model.TaxTreatment;
 
 /**
  * @author SOMYA
- *
+ * 
  */
 public class VoidDetailReportItem {
 	private String date;
-	private String id;
 	private String name;
 	private Double sellPrice;
-	private Double buyPrice;
 	private Double profit;
 	private Integer quantity;
-	private List<TaxTreatment> taxList;
 	private Double discount;
-	
 	private String ticketId;
-	private Double taxAmount;
+	private Double vatTax;
+	private Double svcTax;
 	private Double basePrice;
 	private Double totalAmount;
 
@@ -76,28 +70,12 @@ public class VoidDetailReportItem {
 		this.sellPrice = price;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public String getDate() {
 		return date;
 	}
 
 	public void setDate(String date) {
 		this.date = date;
-	}
-
-	public Double getBuyPrice() {
-		return buyPrice;
-	}
-
-	public void setBuyPrice(Double buyPrice) {
-		this.buyPrice = buyPrice;
 	}
 
 	public Double getProfit() {
@@ -116,20 +94,20 @@ public class VoidDetailReportItem {
 		this.discount = discount;
 	}
 
-	public List<TaxTreatment> getTaxList() {
-		return taxList;
+	public Double getVatTax() {
+		return vatTax;
 	}
 
-	public void setTaxList(List<TaxTreatment> taxList) {
-		this.taxList = taxList;
+	public void setVatTax(Double vatTax) {
+		this.vatTax = vatTax;
 	}
 
-	public Double getTaxAmount() {
-		return taxAmount;
+	public Double getSvcTax() {
+		return svcTax;
 	}
 
-	public void setTaxAmount(Double taxAmount) {
-		this.taxAmount = taxAmount;
+	public void setSvcTax(Double svcTax) {
+		this.svcTax = svcTax;
 	}
 
 }

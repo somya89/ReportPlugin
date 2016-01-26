@@ -1,14 +1,11 @@
-package com.ororeport.orderDetailReport;
+package com.ororeport.ticketDetailReport;
 
-import java.util.List;
-
-import com.floreantpos.model.TaxTreatment;
 
 /**
  * @author SOMYA
  * 
  */
-public class OrderDetailReportItem {
+public class TicketDetailReportItem {
 	private String date;
 	private String name;
 	private Double sellPrice;
@@ -16,7 +13,8 @@ public class OrderDetailReportItem {
 	private Integer quantity;
 	private Double discount;
 	private String ticketId;
-	private Double taxAmount;
+	private Double vatTax;
+	private Double svcTax;
 	private Double basePrice;
 	private Double totalAmount;
 
@@ -44,7 +42,7 @@ public class OrderDetailReportItem {
 		this.totalAmount = totalAmount;
 	}
 
-	public OrderDetailReportItem() {
+	public TicketDetailReportItem() {
 		super();
 	}
 
@@ -96,12 +94,20 @@ public class OrderDetailReportItem {
 		this.discount = discount;
 	}
 
-	public Double getTaxAmount() {
-		return taxAmount;
+	public Double getVatTax() {
+		return vatTax;
 	}
 
-	public void setTaxAmount(Double taxAmount) {
-		this.taxAmount = taxAmount;
+	public void setVatTax(Double vatTax) {
+		this.vatTax = vatTax;
+	}
+
+	public Double getSvcTax() {
+		return svcTax;
+	}
+
+	public void setSvcTax(Double svcTax) {
+		this.svcTax = svcTax;
 	}
 
 }

@@ -16,7 +16,7 @@ public class VoidDetailReportAction extends AbstractAction {
 	 *
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
-	private static final String REPORT_TAB_NAME = "Void Detail Report";
+	private static final String REPORT_TAB_NAME = "Void Ticket Report";
 
 	public VoidDetailReportAction() {
 		super(REPORT_TAB_NAME);

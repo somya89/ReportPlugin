@@ -1,22 +1,22 @@
-package com.ororeport.orderDetailReport;
+package com.ororeport.ticketDetailReport;
 
 import javax.swing.AbstractAction;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import com.floreantpos.extension.ReportPlugin;
-import com.ororeport.orderDetailReport.action.OrderDetailReportAction;
+import com.ororeport.ticketDetailReport.action.TicketDetailReportAction;
 /**
  * @author SOMYA
  *
  */
 @PluginImplementation
-public class OrderReportPlugin implements ReportPlugin {
+public class TicketReportPlugin implements ReportPlugin {
 
 	@Override
 	public AbstractAction[] getReportActions() {
 		return new AbstractAction[] { 
-				new OrderDetailReportAction()};
+				new TicketDetailReportAction()};
 	}
 
 	@Override
