@@ -18,7 +18,7 @@ public class CategoryReportPlugin implements ReportPlugin {
 
 	@Override
 	public String getBaseMenuName() {
-		return "Sales";
+		return "Sales Detail";
 	}
 
 }

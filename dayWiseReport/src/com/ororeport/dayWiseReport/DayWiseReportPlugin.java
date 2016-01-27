@@ -21,7 +21,7 @@ public class DayWiseReportPlugin implements ReportPlugin {
 
 	@Override
 	public String getBaseMenuName() {
-		return "Sales";
+		return "Consolidated Sales";
 	}
 
 }

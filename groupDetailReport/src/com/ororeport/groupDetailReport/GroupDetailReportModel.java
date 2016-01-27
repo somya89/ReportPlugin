@@ -52,15 +52,15 @@ public class GroupDetailReportModel extends AbstractTableModel {
 		case 2:
 			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
 		case 3:
-			return currencySymbol + " " + formatter.format(item.getPrice());
+			return formatter.format(item.getPrice());
 		case 4:
-			return currencySymbol + " " + formatter.format(item.getDiscount());
+			return formatter.format(item.getDiscount());
 		case 5:
-			return currencySymbol + " " + formatter.format(item.getVatTax());
+			return formatter.format(item.getVatTax());
 		case 6:
-			return currencySymbol + " " + formatter.format(item.getSvcTax());
+			return formatter.format(item.getSvcTax());
 		case 7:
-			return currencySymbol + " " + formatter.format(item.getTotalAmount());
+			return formatter.format(item.getTotalAmount());
 		}
 
 		return null;

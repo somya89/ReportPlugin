@@ -58,15 +58,15 @@ public class DayWiseReportModel extends AbstractTableModel {
 		case 1:
 			return String.valueOf(item.getNoOfTickets());
 		case 2:
-			return currencySymbol + " " + formatter.format(item.getBasePrice());
+			return formatter.format(item.getBasePrice());
 		case 3:
-			return currencySymbol + " " + formatter.format(item.getDiscount());
+			return formatter.format(item.getDiscount());
 		case 4:
-			return currencySymbol + " " + formatter.format(item.getVatTax());
+			return formatter.format(item.getVatTax());
 		case 5:
-			return currencySymbol + " " + formatter.format(item.getServiceTax());
+			return formatter.format(item.getServiceTax());
 		case 6:
-			return currencySymbol + " " + formatter.format(item.getTotalAmount());
+			return formatter.format(item.getTotalAmount());
 		}
 		return null;
 	}

@@ -17,6 +17,9 @@
 		<module>menuItemDetailReport</module>
 		<module>groupDetailReport</module>
 		<module>categoryDetailReport</module>
+		<module>menuItemWiseReport</module>
+		<module>groupWiseReport</module>
+		<module>categoryWiseReport</module>
 	</modules>
 	<repositories>
 		<repository>

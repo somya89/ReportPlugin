@@ -1,4 +1,4 @@
-package com.ororeport.ticketDetailReport;
+package com.ororeport.groupWiseReport;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -7,20 +7,19 @@ import javax.swing.table.AbstractTableModel;
 
 import com.floreantpos.main.Application;
 
-/**
- * @author SOMYA
- * 
- */
-public class VoidDetailReportModel extends AbstractTableModel {
+public class GroupWiseReportModel extends AbstractTableModel {
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 4491925433507335878L;
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Ticket", "Date", "Name", "Qty", "Base Price", "Discount", "Vat", "Svc Tax", "Total Amount" };
-	private List<TicketDetailReportItem> items;
+	private String[] columnNames = { "Date", "Group Name", "Qty", "Amount", "Discount", "VAT", "SVC_Tax", "Total Amount" };
+	private List<GroupWiseReportItem> items;
 	private double grandTotal;
 
-	public VoidDetailReportModel() {
+	public GroupWiseReportModel() {
 		super();
 		currencySymbol = Application.getCurrencySymbol();
 	}
@@ -43,37 +42,35 @@ public class VoidDetailReportModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		TicketDetailReportItem item = items.get(rowIndex);
+		GroupWiseReportItem item = items.get(rowIndex);
 
 		switch (columnIndex) {
 		case 0:
-			return item.getTicketId() != null ? item.getTicketId() : "";
-		case 1:
 			return item.getDate() != null ? item.getDate() : "";
+		case 1:
+			return item.getGroupName();
 		case 2:
-			return item.getName() != null ? item.getName() : "";
-		case 3:
 			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
+		case 3:
+			return formatter.format(item.getPrice());
 		case 4:
-			return item.getPrice() != null ? currencySymbol + " " + formatter.format(item.getPrice()) : "";
+			return formatter.format(item.getDiscount());
 		case 5:
-			return item.getDiscount() != null ? currencySymbol + " " + formatter.format(item.getDiscount()) : "";
+			return formatter.format(item.getVatTax());
 		case 6:
-			return item.getVatTax() != null ? currencySymbol + " " + formatter.format(item.getVatTax()) : "";
+			return formatter.format(item.getSvcTax());
 		case 7:
-			return item.getSvcTax() != null ? currencySymbol + " " + formatter.format(item.getSvcTax()) : "";
-		case 8:
-			return item.getTotalAmount() != null ? currencySymbol + " " + formatter.format(item.getTotalAmount()) : "";
+			return formatter.format(item.getTotalAmount());
 		}
 
 		return null;
 	}
 
-	public List<TicketDetailReportItem> getItems() {
+	public List<GroupWiseReportItem> getItems() {
 		return items;
 	}
 
-	public void setItems(List<TicketDetailReportItem> items) {
+	public void setItems(List<GroupWiseReportItem> items) {
 		this.items = items;
 	}
 
@@ -95,7 +92,7 @@ public class VoidDetailReportModel extends AbstractTableModel {
 			return;
 		}
 
-		for (TicketDetailReportItem item : items) {
+		for (GroupWiseReportItem item : items) {
 			grandTotal += item.getPrice();
 		}
 	}

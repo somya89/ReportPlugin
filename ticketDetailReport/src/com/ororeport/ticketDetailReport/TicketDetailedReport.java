@@ -32,8 +32,8 @@ import com.floreantpos.ui.util.TicketUtils;
  *
  */
 public class TicketDetailedReport extends Report {
-	private VoidDetailReportModel itemReportModel;
-	private VoidDetailReportModel modifierReportModel;
+	private TicketDetailReportModel itemReportModel;
+	private TicketDetailReportModel modifierReportModel;
 	private final static String USER_REPORT_DIR = "/com/ororeport/ticketDetailReport/template/";
 
 	public TicketDetailedReport() {
@@ -44,8 +44,8 @@ public class TicketDetailedReport extends Report {
 	public void refresh() throws Exception {
 		createModels();
 
-		VoidDetailReportModel itemReportModel = this.itemReportModel;
-		VoidDetailReportModel modifierReportModel = this.modifierReportModel;
+		TicketDetailReportModel itemReportModel = this.itemReportModel;
+		TicketDetailReportModel modifierReportModel = this.modifierReportModel;
 
 		JasperReport itemReport = ReportUtil.getReport("ticket_report", USER_REPORT_DIR, this.getClass());
 		JasperReport modifierReport = ReportUtil.getReport("ticket_report", USER_REPORT_DIR, this.getClass());
@@ -180,11 +180,11 @@ public class TicketDetailedReport extends Report {
 			}
 			ticket = null;
 		}
-		itemReportModel = new VoidDetailReportModel();
+		itemReportModel = new TicketDetailReportModel();
 		itemReportModel.setItems(itemList);
 		//itemReportModel.calculateGrandTotal();
 
-		modifierReportModel = new VoidDetailReportModel();
+		modifierReportModel = new TicketDetailReportModel();
 		modifierReportModel.setItems(modifierList);
 		//modifierReportModel.calculateGrandTotal();
 	}

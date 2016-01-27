@@ -50,19 +50,19 @@ public class MenuItemDetailReportModel extends AbstractTableModel {
 		case 1:
 			return item.getMenuName();
 		case 2:
-			return item.getBasePrice() != null ? currencySymbol + " " + formatter.format(item.getBasePrice()) : "";
+			return item.getBasePrice() != null ? formatter.format(item.getBasePrice()) : "";
 		case 3:
 			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
 		case 4:
-			return currencySymbol + " " + formatter.format(item.getPrice());
+			return formatter.format(item.getPrice());
 		case 5:
-			return currencySymbol + " " + formatter.format(item.getDiscount());
+			return formatter.format(item.getDiscount());
 		case 6:
-			return currencySymbol + " " + formatter.format(item.getVatTax());
+			return formatter.format(item.getVatTax());
 		case 7:
-			return currencySymbol + " " + formatter.format(item.getSvcTax());
+			return formatter.format(item.getSvcTax());
 		case 8:
-			return currencySymbol + " " + formatter.format(item.getTotalAmount());
+			return formatter.format(item.getTotalAmount());
 		}
 
 		return null;

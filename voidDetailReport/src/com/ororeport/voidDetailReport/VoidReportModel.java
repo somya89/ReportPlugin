@@ -55,15 +55,15 @@ public class VoidReportModel extends AbstractTableModel {
 		case 3:
 			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
 		case 4:
-			return item.getPrice() != null ? currencySymbol + " " + formatter.format(item.getPrice()) : "";
+			return item.getPrice() != null ? formatter.format(item.getPrice()) : "";
 		case 5:
-			return item.getDiscount() != null ? currencySymbol + " " + formatter.format(item.getDiscount()) : "";
+			return item.getDiscount() != null ? formatter.format(item.getDiscount()) : "";
 		case 6:
-			return item.getVatTax() != null ? currencySymbol + " " + formatter.format(item.getVatTax()) : "";
+			return item.getVatTax() != null ? formatter.format(item.getVatTax()) : "";
 		case 7:
-			return item.getSvcTax() != null ? currencySymbol + " " + formatter.format(item.getSvcTax()) : "";
+			return item.getSvcTax() != null ? formatter.format(item.getSvcTax()) : "";
 		case 8:
-			return item.getTotalAmount() != null ? currencySymbol + " " + formatter.format(item.getTotalAmount()) : "";
+			return item.getTotalAmount() != null ? formatter.format(item.getTotalAmount()) : "";
 		}
 
 		return null;
