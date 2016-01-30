@@ -8,22 +8,16 @@ import java.util.Set;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
-import net.sf.jasperreports.view.JRViewer;
-
-import org.jdesktop.swingx.calendar.DateUtils;
 
 import com.floreantpos.main.Application;
-import com.floreantpos.model.MenuItem;
 import com.floreantpos.model.PaymentType;
 import com.floreantpos.model.PosTransaction;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.TicketItemModifier;
 import com.floreantpos.model.TicketItemModifierGroup;
-import com.floreantpos.model.dao.MenuItemDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.report.Report;
 import com.floreantpos.report.ReportUtil;
@@ -40,12 +34,13 @@ public class VoidDetailedReport extends Report {
 	private final static String USER_REPORT_DIR = "/com/ororeport/voidDetailReport/template/";
 
 	public VoidDetailedReport() {
-		super();
+		super("VoidTicketDetailReport");
+		setDailyReport(true);
 	}
 
 	@Override
-	public void refresh() throws Exception {
-		createModels();
+	public void generateReport(Date startDate, Date endDate) throws Exception {
+		createModels(startDate, endDate);
 
 		VoidReportModel itemReportModel = this.itemReportModel;
 		VoidReportModel modifierReportModel = this.modifierReportModel;
@@ -66,9 +61,7 @@ public class VoidDetailedReport extends Report {
 		map.put("modifierReport", modifierReport);
 
 		JasperReport masterReport = ReportUtil.getReport("report_template", USER_REPORT_DIR, this.getClass());
-
-		JasperPrint print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
-		viewer = new JRViewer(print);
+		print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
 	}
 
 	@Override
@@ -84,10 +77,7 @@ public class VoidDetailedReport extends Report {
 	/**
 	 * 
 	 */
-	public void createModels() {
-		Date date1 = DateUtils.startOfDay(getStartDate());
-		Date date2 = DateUtils.endOfDay(getEndDate());
-
+	public void createModels(Date date1, Date date2) {
 		List<Ticket> tickets = TicketDAO.getInstance().findVoidTickets(date1, date2);
 		HashMap<String, VoidDetailReportItem> itemMap = new HashMap<String, VoidDetailReportItem>();
 		HashMap<String, VoidDetailReportItem> modifierMap = new HashMap<String, VoidDetailReportItem>();
@@ -159,7 +149,7 @@ public class VoidDetailedReport extends Report {
 					reportItem.setDiscount(ticketItem.getDiscountAmount());
 					reportItem.setQuantity(ticketItem.getItemCount());
 					reportItem.setTotalAmount(ticketItem.getTotalAmount());
-					
+
 					itemList.add(reportItem);
 					// itemMap.put(key, reportItem);
 				}

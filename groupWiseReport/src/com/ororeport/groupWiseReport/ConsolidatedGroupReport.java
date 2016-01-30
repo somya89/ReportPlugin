@@ -10,12 +10,8 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
-import net.sf.jasperreports.view.JRViewer;
-
-import org.jdesktop.swingx.calendar.DateUtils;
 
 import com.floreantpos.main.Application;
 import com.floreantpos.model.Ticket;
@@ -30,12 +26,12 @@ public class ConsolidatedGroupReport extends Report {
 	private final static String USER_REPORT_DIR = "/com/ororeport/groupWiseReport/template/";
 
 	public ConsolidatedGroupReport() {
-		super();
+		super("ConsolidatedGroupReport");
 	}
 
 	@Override
-	public void refresh() throws Exception {
-		createModels();
+	public void generateReport(Date startDate, Date endDate) throws Exception {
+		createModels(startDate, endDate);
 
 		GroupWiseReportModel itemReportModel = this.itemReportModel;
 		JasperReport itemReport = ReportUtil.getReport("group_wise_report", USER_REPORT_DIR, this.getClass());
@@ -51,9 +47,7 @@ public class ConsolidatedGroupReport extends Report {
 		map.put("itemReport", itemReport);
 
 		JasperReport masterReport = ReportUtil.getReport("report_template", USER_REPORT_DIR, this.getClass());
-		JasperPrint print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
-
-		viewer = new JRViewer(print);
+		print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
 	}
 
 	@Override
@@ -66,9 +60,7 @@ public class ConsolidatedGroupReport extends Report {
 		return true;
 	}
 
-	public void createModels() {
-		Date date1 = DateUtils.startOfDay(getStartDate());
-		Date date2 = DateUtils.endOfDay(getEndDate());
+	public void createModels(Date date1, Date date2) {
 		List<GroupWiseReportItem> itemList = new ArrayList<GroupWiseReportItem>();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
 

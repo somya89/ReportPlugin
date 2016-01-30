@@ -8,12 +8,8 @@ import java.util.Set;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
-import net.sf.jasperreports.view.JRViewer;
-
-import org.jdesktop.swingx.calendar.DateUtils;
 
 import com.floreantpos.main.Application;
 import com.floreantpos.model.OrderType;
@@ -39,12 +35,13 @@ public class TicketDetailedReport extends Report {
 	private final static String USER_REPORT_DIR = "/com/ororeport/ticketDetailReport/template/";
 
 	public TicketDetailedReport() {
-		super();
+		super("TicketDetailReport");
+		setDailyReport(true);
 	}
 
 	@Override
-	public void refresh() throws Exception {
-		createModels();
+	public void generateReport(Date startDate, Date endDate) throws Exception {
+		createModels(startDate, endDate);
 
 		TicketDetailReportModel itemReportModel = this.itemReportModel;
 		TicketDetailReportModel modifierReportModel = this.modifierReportModel;
@@ -67,9 +64,7 @@ public class TicketDetailedReport extends Report {
 		map.put("modifierReport", modifierReport);
 
 		JasperReport masterReport = ReportUtil.getReport("report_template", USER_REPORT_DIR, this.getClass());
-
-		JasperPrint print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
-		viewer = new JRViewer(print);
+		print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
 	}
 
 	@Override
@@ -82,13 +77,8 @@ public class TicketDetailedReport extends Report {
 		return true;
 	}
 
-	/**
-	 * 
-	 */
-	public void createModels() {
-		Date date1 = DateUtils.startOfDay(getStartDate());
-		Date date2 = DateUtils.endOfDay(getEndDate());
-
+	@Override
+	public void createModels(Date date1, Date date2) {
 		List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, date2);
 		HashMap<String, TicketDetailReportItem> itemMap = new HashMap<String, TicketDetailReportItem>();
 		HashMap<String, TicketDetailReportItem> modifierMap = new HashMap<String, TicketDetailReportItem>();
