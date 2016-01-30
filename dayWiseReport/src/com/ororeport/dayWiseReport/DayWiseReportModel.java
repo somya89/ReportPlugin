@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.floreantpos.main.Application;
-
 /**
  * @author SOMYA
  * 
@@ -14,14 +12,12 @@ import com.floreantpos.main.Application;
 public class DayWiseReportModel extends AbstractTableModel {
 	private static final long serialVersionUID = 4491925433507335878L;
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
-	private String currencySymbol;
 
 	private String[] columnNames = { "Date", "Tickets", "Subamount", "Discount", "Vat", "Service", "Cash", "Card", "Total Amount", "TakeOut", "Delivery" };
 	private List<DayWiseReportItem> items;
 
 	public DayWiseReportModel() {
 		super();
-		currencySymbol = Application.getCurrencySymbol();
 	}
 
 	public int getRowCount() {

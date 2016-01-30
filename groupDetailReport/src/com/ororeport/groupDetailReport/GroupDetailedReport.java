@@ -48,12 +48,11 @@ public class GroupDetailedReport extends Report {
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
 		map.put("itemDataSource", new JRTableModelDataSource(itemReportModel));
 		map.put("currencySymbol", Application.getCurrencySymbol());
-		map.put("itemGrandTotal", itemReportModel.getGrandTotalAsString());
 		map.put("itemReport", itemReport);
 
 		JasperReport masterReport = ReportUtil.getReport("report_template", USER_REPORT_DIR, this.getClass());
-
 		JasperPrint print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
+
 		viewer = new JRViewer(print);
 	}
 
@@ -92,7 +91,7 @@ public class GroupDetailedReport extends Report {
 			HashMap<String, GroupDetail> groupMap = new HashMap<String, GroupDetail>();
 
 			for (int i = 0; i < tickets.size(); i++) {
-				Ticket t = TicketDAO.getInstance().loadFullTicket(tickets.get(i).getId());
+				Ticket t = tickets.get(i);
 				List<TicketItem> items = t.getTicketItems();
 				for (TicketItem a : items) {
 					String groupName = a.getGroupName().trim();
@@ -132,7 +131,6 @@ public class GroupDetailedReport extends Report {
 		itemList.add(grandTotalReportItem);
 		itemReportModel = new GroupDetailReportModel();
 		itemReportModel.setItems(itemList);
-		itemReportModel.calculateGrandTotal();
 	}
 
 	class GroupDetail {

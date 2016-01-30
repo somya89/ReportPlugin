@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_template" pageWidth="875" pageHeight="842" orientation="Landscape" columnWidth="819" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_template" pageWidth="910" pageHeight="842" orientation="Landscape" columnWidth="854" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="70"/>
+	<property name="ireport.x" value="68"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -171,7 +171,7 @@
 	<detail>
 		<band height="48" splitType="Stretch">
 			<subreport isUsingCache="true">
-				<reportElement key="subreport-1" x="0" y="1" width="820" height="21"/>
+				<reportElement key="subreport-1" x="0" y="1" width="855" height="21"/>
 				<subreportParameter name="reportType">
 					<subreportParameterExpression><![CDATA["Item Sales"]]></subreportParameterExpression>
 				</subreportParameter>
@@ -182,7 +182,7 @@
 				<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[$P{itemReport}]]></subreportExpression>
 			</subreport>
 			<subreport isUsingCache="true">
-				<reportElement key="subreport-2" positionType="Float" x="0" y="27" width="820" height="21"/>
+				<reportElement key="subreport-2" positionType="Float" x="0" y="27" width="855" height="21"/>
 				<subreportParameter name="reportType">
 					<subreportParameterExpression><![CDATA["Modifier Sales"]]></subreportParameterExpression>
 				</subreportParameter>

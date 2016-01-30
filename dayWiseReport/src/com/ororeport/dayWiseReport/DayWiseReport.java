@@ -17,7 +17,6 @@ import net.sf.jasperreports.view.JRViewer;
 
 import org.jdesktop.swingx.calendar.DateUtils;
 
-import com.floreantpos.main.Application;
 import com.floreantpos.model.OrderType;
 import com.floreantpos.model.PaymentType;
 import com.floreantpos.model.PosTransaction;
@@ -34,7 +33,6 @@ import com.floreantpos.report.service.ReportService;
  */
 public class DayWiseReport extends Report {
 	private DayWiseReportModel itemReportModel;
-	private DayWiseReportModel modifierReportModel;
 	private final static String USER_REPORT_DIR = "/com/ororeport/dayWiseReport/template/";
 
 	public DayWiseReport() {
@@ -46,26 +44,19 @@ public class DayWiseReport extends Report {
 		createModels();
 
 		DayWiseReportModel itemReportModel = this.itemReportModel;
-		DayWiseReportModel modifierReportModel = this.modifierReportModel;
-
 		JasperReport itemReport = ReportUtil.getReport("daywise_report", USER_REPORT_DIR, this.getClass());
-		JasperReport modifierReport = ReportUtil.getReport("daywise_report", USER_REPORT_DIR, this.getClass());
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
 		map.put("reportType", "Day Wise Consolidated Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatShortDate(getStartDate()) + " to " + ReportService.formatShortDate(getEndDate()));
-		// map.put("terminalName", com.floreantpos.POSConstants.ALL);
 		map.put("itemDataSource", new JRTableModelDataSource(itemReportModel));
-		map.put("modifierDataSource", new JRTableModelDataSource(modifierReportModel));
-		map.put("currencySymbol", Application.getCurrencySymbol());
 		map.put("itemReport", itemReport);
-		map.put("modifierReport", modifierReport);
 
 		JasperReport masterReport = ReportUtil.getReport("report_template", USER_REPORT_DIR, this.getClass());
-
 		JasperPrint print = JasperFillManager.fillReport(masterReport, map, new JREmptyDataSource());
+		
 		viewer = new JRViewer(print);
 	}
 
@@ -107,12 +98,11 @@ public class DayWiseReport extends Report {
 			c.add(Calendar.DATE, 1); // number of days to add
 			Date d3 = c.getTime();
 			List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, d3);
+
 			date1 = d3;
 			if (tickets.size() > 0) {
-				Ticket ticket = TicketDAO.getInstance().loadFullTicket(tickets.get(0).getId());
-
 				DayWiseReportItem reportItem = new DayWiseReportItem();
-				reportItem.setDate(ticket.getCreateDateDayFormatted());
+				reportItem.setDate(tickets.get(0).getCreateDateDayFormatted());
 				reportItem.setBasePrice(0.0);
 				reportItem.setDiscount(0.0);
 				reportItem.setNoOfTickets(tickets.size());
@@ -125,10 +115,9 @@ public class DayWiseReport extends Report {
 				reportItem.setHomeDelivery(0);
 				grandTotalReportItem.setNoOfTickets(grandTotalReportItem.getNoOfTickets() + tickets.size());
 
-				for (Ticket t : tickets) {
-					ticket = TicketDAO.getInstance().loadFullTicket(t.getId());
-
+				for (Ticket ticket : tickets) {
 					Set<PosTransaction> tansactions = ticket.getTransactions();
+
 					double cashAmount = 0.0;
 					double cardAmount = 0.0;
 					for (PosTransaction trans : tansactions) {
@@ -152,8 +141,8 @@ public class DayWiseReport extends Report {
 						reportItem.setHomeDelivery(reportItem.getHomeDelivery() + 1);
 						grandTotalReportItem.setHomeDelivery(grandTotalReportItem.getHomeDelivery() + 1);
 					}
-
 					List<TicketItem> ticketItems = ticket.getTicketItems();
+
 					if (ticketItems == null)
 						continue;
 					reportItem.setBasePrice(reportItem.getBasePrice() + ticket.getSubtotalAmount());
@@ -177,7 +166,6 @@ public class DayWiseReport extends Report {
 					reportItem.setVatTax(reportItem.getVatTax() + vatTax);
 					grandTotalReportItem.setServiceTax(grandTotalReportItem.getServiceTax() + serviceTax);
 					grandTotalReportItem.setVatTax(grandTotalReportItem.getVatTax() + vatTax);
-
 					ticket = null;
 				}
 				itemList.add(reportItem);
