@@ -7,11 +7,15 @@ package com.ororeport.dayWiseReport;
 public class DayWiseReportItem {
 	private String date;
 	private int noOfTickets;
+	private int takeOut;
+	private int homeDelivery;
 	private double discount;
 	private double basePrice;
 	private double totalAmount;
 	private double serviceTax;
 	private double vatTax;
+	private double cashTrans;
+	private double cardTrans;
 
 	public String getDate() {
 		return date;
@@ -67,6 +71,38 @@ public class DayWiseReportItem {
 
 	public void setVatTax(double vatTax) {
 		this.vatTax = vatTax;
+	}
+
+	public double getCashTrans() {
+		return cashTrans;
+	}
+
+	public void setCashTrans(double cashTrans) {
+		this.cashTrans = cashTrans;
+	}
+
+	public double getCardTrans() {
+		return cardTrans;
+	}
+
+	public void setCardTrans(double cardTrans) {
+		this.cardTrans = cardTrans;
+	}
+
+	public int getTakeOut() {
+		return takeOut;
+	}
+
+	public void setTakeOut(int takeOut) {
+		this.takeOut = takeOut;
+	}
+
+	public int getHomeDelivery() {
+		return homeDelivery;
+	}
+
+	public void setHomeDelivery(int homeDelivery) {
+		this.homeDelivery = homeDelivery;
 	}
 
 }

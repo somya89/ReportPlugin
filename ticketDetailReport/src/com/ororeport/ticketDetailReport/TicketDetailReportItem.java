@@ -9,14 +9,18 @@ public class TicketDetailReportItem {
 	private String date;
 	private String name;
 	private Double sellPrice;
-	private Double profit;
 	private Integer quantity;
 	private Double discount;
 	private String ticketId;
+	private String orderType;
 	private Double vatTax;
 	private Double svcTax;
 	private Double basePrice;
+	private Double cashAmount;
+	private Double cardAmount;
+	private Double subTotalAmount;
 	private Double totalAmount;
+	private String voidReason;
 
 	public String getTicketId() {
 		return ticketId;
@@ -78,14 +82,6 @@ public class TicketDetailReportItem {
 		this.date = date;
 	}
 
-	public Double getProfit() {
-		return profit;
-	}
-
-	public void setProfit(Double profit) {
-		this.profit = profit;
-	}
-
 	public Double getDiscount() {
 		return discount;
 	}
@@ -108,6 +104,46 @@ public class TicketDetailReportItem {
 
 	public void setSvcTax(Double svcTax) {
 		this.svcTax = svcTax;
+	}
+
+	public Double getCashAmount() {
+		return cashAmount;
+	}
+
+	public void setCashAmount(Double cashAmount) {
+		this.cashAmount = cashAmount;
+	}
+
+	public Double getCardAmount() {
+		return cardAmount;
+	}
+
+	public void setCardAmount(Double cardAmount) {
+		this.cardAmount = cardAmount;
+	}
+
+	public String getVoidReason() {
+		return voidReason;
+	}
+
+	public void setVoidReason(String voidReason) {
+		this.voidReason = voidReason;
+	}
+
+	public Double getSubTotalAmount() {
+		return subTotalAmount;
+	}
+
+	public void setSubTotalAmount(Double subTotalAmount) {
+		this.subTotalAmount = subTotalAmount;
+	}
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
 	}
 
 }

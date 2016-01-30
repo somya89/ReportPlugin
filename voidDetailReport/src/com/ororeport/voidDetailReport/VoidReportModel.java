@@ -16,9 +16,8 @@ public class VoidReportModel extends AbstractTableModel {
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Ticket", "Date", "Name", "Qty", "Base Price", "Discount", "Vat", "Svc Tax", "Total Amount" };
+	private String[] columnNames = { "Ticket", "Date", "Name", "Qty", "Base Price", "Discount", "Vat", "Svc Tax", "Cash", "Card", "Total Amount", "Reason" };
 	private List<VoidDetailReportItem> items;
-	private double grandTotal;
 
 	public VoidReportModel() {
 		super();
@@ -42,6 +41,14 @@ public class VoidReportModel extends AbstractTableModel {
 		return columnNames[column];
 	}
 
+	public List<VoidDetailReportItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<VoidDetailReportItem> items) {
+		this.items = items;
+	}
+
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		VoidDetailReportItem item = items.get(rowIndex);
 
@@ -63,40 +70,16 @@ public class VoidReportModel extends AbstractTableModel {
 		case 7:
 			return item.getSvcTax() != null ? formatter.format(item.getSvcTax()) : "";
 		case 8:
+			return item.getCashAmount() != null ? formatter.format(item.getCashAmount()) : "";
+		case 9:
+			return item.getCardAmount() != null ? formatter.format(item.getCardAmount()) : "";
+		case 10:
 			return item.getTotalAmount() != null ? formatter.format(item.getTotalAmount()) : "";
+		case 11:
+			return item.getVoidReason();
 		}
 
 		return null;
 	}
 
-	public List<VoidDetailReportItem> getItems() {
-		return items;
-	}
-
-	public void setItems(List<VoidDetailReportItem> items) {
-		this.items = items;
-	}
-
-	public double getGrandTotal() {
-		return grandTotal;
-	}
-
-	public String getGrandTotalAsString() {
-		return currencySymbol + " " + formatter.format(grandTotal);
-	}
-
-	public void setGrandTotal(double grandTotal) {
-		this.grandTotal = grandTotal;
-	}
-
-	public void calculateGrandTotal() {
-		grandTotal = 0;
-		if (items == null) {
-			return;
-		}
-
-		for (VoidDetailReportItem item : items) {
-			grandTotal += item.getPrice();
-		}
-	}
 }

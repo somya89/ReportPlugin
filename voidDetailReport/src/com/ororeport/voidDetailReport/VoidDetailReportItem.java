@@ -1,6 +1,5 @@
 package com.ororeport.voidDetailReport;
 
-
 /**
  * @author SOMYA
  * 
@@ -9,14 +8,16 @@ public class VoidDetailReportItem {
 	private String date;
 	private String name;
 	private Double sellPrice;
-	private Double profit;
 	private Integer quantity;
 	private Double discount;
 	private String ticketId;
 	private Double vatTax;
 	private Double svcTax;
 	private Double basePrice;
+	private Double cashAmount;
+	private Double cardAmount;
 	private Double totalAmount;
+	private String voidReason;
 
 	public String getTicketId() {
 		return ticketId;
@@ -40,10 +41,6 @@ public class VoidDetailReportItem {
 
 	public void setTotalAmount(Double totalAmount) {
 		this.totalAmount = totalAmount;
-	}
-
-	public VoidDetailReportItem() {
-		super();
 	}
 
 	public String getName() {
@@ -78,14 +75,6 @@ public class VoidDetailReportItem {
 		this.date = date;
 	}
 
-	public Double getProfit() {
-		return profit;
-	}
-
-	public void setProfit(Double profit) {
-		this.profit = profit;
-	}
-
 	public Double getDiscount() {
 		return discount;
 	}
@@ -108,6 +97,30 @@ public class VoidDetailReportItem {
 
 	public void setSvcTax(Double svcTax) {
 		this.svcTax = svcTax;
+	}
+
+	public Double getCashAmount() {
+		return cashAmount;
+	}
+
+	public void setCashAmount(Double cashAmount) {
+		this.cashAmount = cashAmount;
+	}
+
+	public Double getCardAmount() {
+		return cardAmount;
+	}
+
+	public void setCardAmount(Double cardAmount) {
+		this.cardAmount = cardAmount;
+	}
+
+	public String getVoidReason() {
+		return voidReason;
+	}
+
+	public void setVoidReason(String voidReason) {
+		this.voidReason = voidReason;
 	}
 
 }

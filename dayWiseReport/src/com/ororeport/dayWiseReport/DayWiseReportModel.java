@@ -16,7 +16,7 @@ public class DayWiseReportModel extends AbstractTableModel {
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Date", "Tickets", "Subamount", "Discount", "Vat", "Service", "Total Amount" };
+	private String[] columnNames = { "Date", "Tickets", "Subamount", "Discount", "Vat", "Service", "Cash", "Card", "Total Amount", "TakeOut", "Delivery" };
 	private List<DayWiseReportItem> items;
 
 	public DayWiseReportModel() {
@@ -66,7 +66,15 @@ public class DayWiseReportModel extends AbstractTableModel {
 		case 5:
 			return formatter.format(item.getServiceTax());
 		case 6:
+			return formatter.format(item.getCashTrans());
+		case 7:
+			return formatter.format(item.getCardTrans());
+		case 8:
 			return formatter.format(item.getTotalAmount());
+		case 9:
+			return String.valueOf(item.getTakeOut());
+		case 10:
+			return String.valueOf(item.getHomeDelivery());
 		}
 		return null;
 	}

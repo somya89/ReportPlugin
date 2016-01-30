@@ -16,7 +16,7 @@ public class TicketDetailReportModel extends AbstractTableModel {
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Ticket", "Date", "Name", "Qty", "Base Price", "Discount", "Vat", "Svc Tax", "Total Amount" };
+	private String[] columnNames = { "Ticket", "Date", "Name", "Qty", "Base Price", "Discount", "Vat", "Svc Tax", "Cash", "Card", "Total_noTax", "Total Amount", "OrderType" };
 	private List<TicketDetailReportItem> items;
 	private double grandTotal;
 
@@ -63,7 +63,15 @@ public class TicketDetailReportModel extends AbstractTableModel {
 		case 7:
 			return item.getSvcTax() != null ? formatter.format(item.getSvcTax()) : "";
 		case 8:
+			return item.getCashAmount() != null ? formatter.format(item.getCashAmount()) : "";
+		case 9:
+			return item.getCardAmount() != null ? formatter.format(item.getCardAmount()) : "";
+		case 10:
+			return item.getSubTotalAmount() != null ? formatter.format(item.getSubTotalAmount()) : "";
+		case 11:
 			return item.getTotalAmount() != null ? formatter.format(item.getTotalAmount()) : "";
+		case 12:
+			return item.getOrderType() != null ? String.valueOf(item.getOrderType()) : "";
 		}
 
 		return null;

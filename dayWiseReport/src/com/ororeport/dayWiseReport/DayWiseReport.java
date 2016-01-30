@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -17,6 +18,9 @@ import net.sf.jasperreports.view.JRViewer;
 import org.jdesktop.swingx.calendar.DateUtils;
 
 import com.floreantpos.main.Application;
+import com.floreantpos.model.OrderType;
+import com.floreantpos.model.PaymentType;
+import com.floreantpos.model.PosTransaction;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.dao.TicketDAO;
@@ -91,7 +95,11 @@ public class DayWiseReport extends Report {
 		grandTotalReportItem.setNoOfTickets(0);
 		grandTotalReportItem.setServiceTax(0.0);
 		grandTotalReportItem.setVatTax(0.0);
+		grandTotalReportItem.setCashTrans(0.0);
+		grandTotalReportItem.setCardTrans(0.0);
 		grandTotalReportItem.setTotalAmount(0.0);
+		grandTotalReportItem.setHomeDelivery(0);
+		grandTotalReportItem.setTakeOut(0);
 
 		for (; date1.after(date2) == false;) {
 			Calendar c = Calendar.getInstance();
@@ -111,24 +119,50 @@ public class DayWiseReport extends Report {
 				reportItem.setServiceTax(0.0);
 				reportItem.setVatTax(0.0);
 				reportItem.setTotalAmount(0.0);
+				reportItem.setCashTrans(0.0);
+				reportItem.setCardTrans(0.0);
+				reportItem.setTakeOut(0);
+				reportItem.setHomeDelivery(0);
 				grandTotalReportItem.setNoOfTickets(grandTotalReportItem.getNoOfTickets() + tickets.size());
 
 				for (Ticket t : tickets) {
 					ticket = TicketDAO.getInstance().loadFullTicket(t.getId());
 
+					Set<PosTransaction> tansactions = ticket.getTransactions();
+					double cashAmount = 0.0;
+					double cardAmount = 0.0;
+					for (PosTransaction trans : tansactions) {
+						if (trans.getPaymentType().equalsIgnoreCase(PaymentType.CASH.name())) {
+							cashAmount += trans.getAmount();
+						} else if (trans.getPaymentType().equalsIgnoreCase(PaymentType.CARD.name())) {
+							cardAmount += trans.getAmount();
+						} else {
+							System.out.println("some other trans: " + trans.getAmount() + " and date" + ticket.getCreateDateFormatted());
+						}
+					}
+					reportItem.setCashTrans(reportItem.getCashTrans() + cashAmount);
+					reportItem.setCardTrans(reportItem.getCardTrans() + cardAmount);
+					grandTotalReportItem.setCashTrans(grandTotalReportItem.getCashTrans() + cashAmount);
+					grandTotalReportItem.setCardTrans(grandTotalReportItem.getCardTrans() + cardAmount);
+
+					if (ticket.getTicketType().contains(OrderType.TAKE_OUT.name())) {
+						reportItem.setTakeOut(reportItem.getTakeOut() + 1);
+						grandTotalReportItem.setTakeOut(grandTotalReportItem.getTakeOut() + 1);
+					} else if (ticket.getTicketType().contains(OrderType.HOME_DELIVERY.name())) {
+						reportItem.setHomeDelivery(reportItem.getHomeDelivery() + 1);
+						grandTotalReportItem.setHomeDelivery(grandTotalReportItem.getHomeDelivery() + 1);
+					}
+
 					List<TicketItem> ticketItems = ticket.getTicketItems();
 					if (ticketItems == null)
 						continue;
+					reportItem.setBasePrice(reportItem.getBasePrice() + ticket.getSubtotalAmount());
+					reportItem.setDiscount(reportItem.getDiscount() + ticket.getDiscountAmount());
+					reportItem.setTotalAmount(reportItem.getTotalAmount() + ticket.getTotalAmount());
+					grandTotalReportItem.setBasePrice(grandTotalReportItem.getBasePrice() + ticket.getSubtotalAmount());
+					grandTotalReportItem.setDiscount(grandTotalReportItem.getDiscount() + ticket.getDiscountAmount());
+					grandTotalReportItem.setTotalAmount(grandTotalReportItem.getTotalAmount() + ticket.getTotalAmount());
 
-					for (TicketItem ticketItem : ticketItems) {
-						reportItem.setBasePrice(reportItem.getBasePrice() + ticketItem.getSubtotalAmount());
-						reportItem.setDiscount(reportItem.getDiscount() + ticketItem.getDiscountAmount());
-						grandTotalReportItem.setBasePrice(grandTotalReportItem.getBasePrice() + ticketItem.getSubtotalAmount());
-						grandTotalReportItem.setDiscount(grandTotalReportItem.getDiscount() + ticketItem.getDiscountAmount());
-						reportItem.setTotalAmount(reportItem.getTotalAmount() + ticketItem.getTotalAmount());
-						grandTotalReportItem.setTotalAmount(grandTotalReportItem.getTotalAmount() + ticketItem.getTotalAmount());
-
-					}
 					double serviceTax = 0.0;
 					double vatTax = 0.0;
 					Map<String, Double> taxMap = ticket.getTicketTaxDetails();

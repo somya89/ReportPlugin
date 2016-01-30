@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -16,6 +17,8 @@ import org.jdesktop.swingx.calendar.DateUtils;
 
 import com.floreantpos.main.Application;
 import com.floreantpos.model.MenuItem;
+import com.floreantpos.model.PaymentType;
+import com.floreantpos.model.PosTransaction;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketItem;
 import com.floreantpos.model.TicketItemModifier;
@@ -29,7 +32,7 @@ import com.floreantpos.ui.util.TicketUtils;
 
 /**
  * @author SOMYA
- *
+ * 
  */
 public class VoidDetailedReport extends Report {
 	private VoidReportModel itemReportModel;
@@ -59,8 +62,6 @@ public class VoidDetailedReport extends Report {
 		map.put("itemDataSource", new JRTableModelDataSource(itemReportModel));
 		map.put("modifierDataSource", new JRTableModelDataSource(modifierReportModel));
 		map.put("currencySymbol", Application.getCurrencySymbol());
-		map.put("itemGrandTotal", itemReportModel.getGrandTotalAsString());
-		map.put("modifierGrandTotal", modifierReportModel.getGrandTotalAsString());
 		map.put("itemReport", itemReport);
 		map.put("modifierReport", modifierReport);
 
@@ -92,14 +93,14 @@ public class VoidDetailedReport extends Report {
 		HashMap<String, VoidDetailReportItem> modifierMap = new HashMap<String, VoidDetailReportItem>();
 		List<VoidDetailReportItem> itemList = new ArrayList<VoidDetailReportItem>();
 		List<VoidDetailReportItem> modifierList = new ArrayList<VoidDetailReportItem>();
-		
+
 		String startDate = null;
 		String ticketDate = null;
 		for (Ticket t : tickets) {
 
 			Ticket ticket = TicketDAO.getInstance().loadFullTicket(t.getId());
 			ticketDate = ticket.getCreateDateFormatted();
-			if(!ticketDate.equals(startDate)){
+			if (!ticketDate.equals(startDate)) {
 				VoidDetailReportItem reportItem = new VoidDetailReportItem();
 				reportItem.setDate(ticketDate);
 				reportItem.setTicketId(null);
@@ -109,7 +110,10 @@ public class VoidDetailedReport extends Report {
 				reportItem.setQuantity(null);
 				reportItem.setVatTax(null);
 				reportItem.setSvcTax(null);
+				reportItem.setCashAmount(null);
+				reportItem.setCardAmount(null);
 				reportItem.setTotalAmount(null);
+				reportItem.setVoidReason(null);
 				startDate = ticketDate;
 				itemList.add(reportItem);
 			}
@@ -119,6 +123,16 @@ public class VoidDetailedReport extends Report {
 				continue;
 			boolean first = true;
 			String key = null;
+			Set<PosTransaction> tansactions = ticket.getTransactions();
+			double cashAmount = 0.0;
+			double cardAmount = 0.0;
+			for (PosTransaction trans : tansactions) {
+				if (trans.getPaymentType().equalsIgnoreCase(PaymentType.CASH.name())) {
+					cashAmount += trans.getAmount();
+				} else if (trans.getPaymentType().equalsIgnoreCase(PaymentType.CARD.name())) {
+					cardAmount += trans.getAmount();
+				}
+			}
 			for (TicketItem ticketItem : ticketItems) {
 				if (ticketItem.getItemId() == null) {
 					key = ticketItem.getName();
@@ -126,28 +140,28 @@ public class VoidDetailedReport extends Report {
 					key = ticketItem.getItemId().toString();
 				}
 				VoidDetailReportItem reportItem = itemMap.get(key);
-				MenuItem mi = MenuItemDAO.getInstance().findByItemId(ticketItem.getItemId());
 				if (reportItem == null) {
 					reportItem = new VoidDetailReportItem();
 					if (first) {
 						reportItem.setTicketId(TicketUtils.getTicketNumber(ticket));
-						reportItem.setDate(ticket.getCreateDateFormatted());
-						reportItem.setDate(null);
+						reportItem.setCardAmount(cardAmount);
+						reportItem.setCashAmount(cashAmount);
+						reportItem.setVoidReason(ticket.getVoidReason());
 						first = false;
-					} else{
+					} else {
 						reportItem.setTicketId(null);
-						reportItem.setDate(null);
 					}
+					reportItem.setDate(null);
 					reportItem.setPrice(ticketItem.getUnitPrice());
-					reportItem.setProfit(ticketItem.getUnitPrice() - mi.getBuyPrice());
 					reportItem.setName(ticketItem.getName());
 					reportItem.setVatTax(ticketItem.getVatTaxAmount());
 					reportItem.setSvcTax(ticketItem.getServiceTaxAmount());
 					reportItem.setDiscount(ticketItem.getDiscountAmount());
 					reportItem.setQuantity(ticketItem.getItemCount());
 					reportItem.setTotalAmount(ticketItem.getTotalAmount());
+					
 					itemList.add(reportItem);
-//					itemMap.put(key, reportItem);
+					// itemMap.put(key, reportItem);
 				}
 
 				if (ticketItem.isHasModifiers() && ticketItem.getTicketItemModifierGroups() != null) {
@@ -169,7 +183,7 @@ public class VoidDetailedReport extends Report {
 								// modifierReportItem.setTaxRate(modifier.getTaxRate());
 								modifierList.add(modifierReportItem);
 
-//								modifierMap.put(key, modifierReportItem);
+								// modifierMap.put(key, modifierReportItem);
 							}
 							modifierReportItem.setQuantity(modifierReportItem.getQuantity() + 1);
 							// modifierReportItem.setTotal(modifierReportItem.getTotal()
@@ -182,10 +196,10 @@ public class VoidDetailedReport extends Report {
 		}
 		itemReportModel = new VoidReportModel();
 		itemReportModel.setItems(itemList);
-		//itemReportModel.calculateGrandTotal();
+		// itemReportModel.calculateGrandTotal();
 
 		modifierReportModel = new VoidReportModel();
 		modifierReportModel.setItems(modifierList);
-		//modifierReportModel.calculateGrandTotal();
+		// modifierReportModel.calculateGrandTotal();
 	}
 }
