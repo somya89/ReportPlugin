@@ -41,7 +41,7 @@ public class CategoryDetailedReport extends Report {
 		ReportUtil.populateRestaurantProperties(map);
 		map.put("reportType", "Menu Category Detail Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
-		map.put("dateRange", ReportService.formatShortDate(getStartDate()) + " to " + ReportService.formatShortDate(getEndDate()));
+		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
 		map.put("itemDataSource", new JRTableModelDataSource(itemReportModel));
 		map.put("currencySymbol", Application.getCurrencySymbol());
