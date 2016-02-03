@@ -132,6 +132,8 @@ public class TicketDetailedReport extends Report {
 				orderType = "TakeOut";
 			} else if (ticket.getTicketType().contains(OrderType.HOME_DELIVERY.name())) {
 				orderType = "Delivery";
+			} else if (ticket.getTicketType().contains(OrderType.DINE_IN.name())) {
+				orderType = "Dine in";
 			}
 			for (TicketItem ticketItem : ticketItems) {
 				if (ticketItem.getItemId() == null) {

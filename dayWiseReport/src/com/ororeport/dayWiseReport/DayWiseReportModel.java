@@ -13,7 +13,7 @@ public class DayWiseReportModel extends AbstractTableModel {
 	private static final long serialVersionUID = 4491925433507335878L;
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 
-	private String[] columnNames = { "Date", "Tickets", "Subamount", "Discount", "Vat", "Service", "Cash", "Card", "Total Amount", "TakeOut", "Delivery" };
+	private String[] columnNames = { "Date", "Tickets", "Subamount", "Discount", "Vat", "Service", "Cash", "Card", "Total Amount", "TakeOut", "Delivery", "Dine" };
 	private List<DayWiseReportItem> items;
 
 	public DayWiseReportModel() {
@@ -71,6 +71,8 @@ public class DayWiseReportModel extends AbstractTableModel {
 			return String.valueOf(item.getTakeOut());
 		case 10:
 			return String.valueOf(item.getHomeDelivery());
+		case 11:
+			return String.valueOf(item.getDineIn());
 		}
 		return null;
 	}

@@ -132,6 +132,9 @@ public class DayWiseReport extends Report {
 					} else if (ticket.getTicketType().contains(OrderType.HOME_DELIVERY.name())) {
 						reportItem.setHomeDelivery(reportItem.getHomeDelivery() + 1);
 						grandTotalReportItem.setHomeDelivery(grandTotalReportItem.getHomeDelivery() + 1);
+					} else if (ticket.getTicketType().contains(OrderType.DINE_IN.name())) {
+						reportItem.setDineIn(reportItem.getDineIn() + 1);
+						grandTotalReportItem.setDineIn(grandTotalReportItem.getDineIn() + 1);
 					}
 					List<TicketItem> ticketItems = ticket.getTicketItems();
 

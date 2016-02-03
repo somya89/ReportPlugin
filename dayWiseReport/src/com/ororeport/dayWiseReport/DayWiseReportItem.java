@@ -9,6 +9,7 @@ public class DayWiseReportItem {
 	private int noOfTickets;
 	private int takeOut;
 	private int homeDelivery;
+	private int dineIn;
 	private double discount;
 	private double basePrice;
 	private double totalAmount;
@@ -103,6 +104,14 @@ public class DayWiseReportItem {
 
 	public void setHomeDelivery(int homeDelivery) {
 		this.homeDelivery = homeDelivery;
+	}
+
+	public int getDineIn() {
+		return dineIn;
+	}
+
+	public void setDineIn(int dineIn) {
+		this.dineIn = dineIn;
 	}
 
 }
