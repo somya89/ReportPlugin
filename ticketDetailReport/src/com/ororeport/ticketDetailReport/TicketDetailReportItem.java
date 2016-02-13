@@ -7,6 +7,7 @@ package com.ororeport.ticketDetailReport;
  */
 public class TicketDetailReportItem {
 	private String date;
+	private String time;
 	private String name;
 	private Double sellPrice;
 	private Integer quantity;
@@ -144,6 +145,14 @@ public class TicketDetailReportItem {
 
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 }

@@ -87,13 +87,16 @@ public class TicketDetailedReport extends Report {
 
 		String startDate = null;
 		String ticketDate = null;
+		String ticketTime = null;
 		for (Ticket t : tickets) {
 
 			Ticket ticket = TicketDAO.getInstance().loadFullTicket(t.getId());
 			ticketDate = ticket.getCreateDateFormatted();
+			ticketTime = ticket.getCreateTimeFormatted();
 			if (!ticketDate.equals(startDate)) {
 				TicketDetailReportItem reportItem = new TicketDetailReportItem();
 				reportItem.setDate(ticketDate);
+				reportItem.setTime(null);
 				reportItem.setOrderType(null);
 				reportItem.setTicketId(null);
 				reportItem.setDiscount(null);
@@ -146,6 +149,7 @@ public class TicketDetailedReport extends Report {
 					reportItem = new TicketDetailReportItem();
 					if (first) {
 						reportItem.setTicketId(TicketUtils.getTicketNumber(ticket));
+						reportItem.setTime(ticketTime);
 						reportItem.setOrderType(orderType);
 						reportItem.setCardAmount(cardAmount);
 						reportItem.setCashAmount(cashAmount);
@@ -153,8 +157,9 @@ public class TicketDetailedReport extends Report {
 						first = false;
 					} else {
 						reportItem.setTicketId(null);
+						reportItem.setTime(null);
 					}
-					reportItem.setDate(null);
+					reportItem.setDate(null);					
 					reportItem.setPrice(ticketItem.getUnitPrice());
 					reportItem.setName(ticketItem.getName());
 					reportItem.setVatTax(ticketItem.getVatTaxAmount());

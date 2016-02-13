@@ -16,7 +16,7 @@ public class TicketDetailReportModel extends AbstractTableModel {
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Ticket", "Date", "Name", "Qty", "Base Price", "Discount", "Vat", "Svc Tax", "Cash", "Card", "Total_noTax", "Total Amount", "OrderType" };
+	private String[] columnNames = { "Ticket", "Date", "Time", "Name", "Qty", "Base Price", "Discount", "Vat", "Svc Tax", "Cash", "Card", "Total_noTax", "Total Amount", "OrderType" };
 	private List<TicketDetailReportItem> items;
 	private double grandTotal;
 
@@ -51,26 +51,28 @@ public class TicketDetailReportModel extends AbstractTableModel {
 		case 1:
 			return item.getDate() != null ? item.getDate() : "";
 		case 2:
-			return item.getName() != null ? item.getName() : "";
+			return item.getTime() != null ? item.getTime() : "";
 		case 3:
-			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
+			return item.getName() != null ? item.getName() : "";
 		case 4:
-			return item.getPrice() != null ? formatter.format(item.getPrice()) : "";
+			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
 		case 5:
-			return item.getDiscount() != null ? formatter.format(item.getDiscount()) : "";
+			return item.getPrice() != null ? formatter.format(item.getPrice()) : "";
 		case 6:
-			return item.getVatTax() != null ? formatter.format(item.getVatTax()) : "";
+			return item.getDiscount() != null ? formatter.format(item.getDiscount()) : "";
 		case 7:
-			return item.getSvcTax() != null ? formatter.format(item.getSvcTax()) : "";
+			return item.getVatTax() != null ? formatter.format(item.getVatTax()) : "";
 		case 8:
-			return item.getCashAmount() != null ? formatter.format(item.getCashAmount()) : "";
+			return item.getSvcTax() != null ? formatter.format(item.getSvcTax()) : "";
 		case 9:
-			return item.getCardAmount() != null ? formatter.format(item.getCardAmount()) : "";
+			return item.getCashAmount() != null ? formatter.format(item.getCashAmount()) : "";
 		case 10:
-			return item.getSubTotalAmount() != null ? formatter.format(item.getSubTotalAmount()) : "";
+			return item.getCardAmount() != null ? formatter.format(item.getCardAmount()) : "";
 		case 11:
-			return item.getTotalAmount() != null ? formatter.format(item.getTotalAmount()) : "";
+			return item.getSubTotalAmount() != null ? formatter.format(item.getSubTotalAmount()) : "";
 		case 12:
+			return item.getTotalAmount() != null ? formatter.format(item.getTotalAmount()) : "";
+		case 13:
 			return item.getOrderType() != null ? String.valueOf(item.getOrderType()) : "";
 		}
 
