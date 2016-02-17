@@ -20,6 +20,7 @@
 		<module>menuItemWiseReport</module>
 		<module>groupWiseReport</module>
 		<module>categoryWiseReport</module>
+		<module>cardPaymentReport</module>
 	</modules>
 	<repositories>
 		<repository>
