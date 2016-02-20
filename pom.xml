@@ -16,10 +16,9 @@
 		<module>voidDetailReport</module>
 		<module>menuItemDetailReport</module>
 		<module>groupDetailReport</module>
-		<module>categoryDetailReport</module>
+		<module>ticketWiseReport</module>
 		<module>menuItemWiseReport</module>
 		<module>groupWiseReport</module>
-		<module>categoryWiseReport</module>
 		<module>cardPaymentReport</module>
 	</modules>
 	<repositories>
