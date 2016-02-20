@@ -16,7 +16,7 @@ public class CardPaymentReportAction extends AbstractAction {
 	 *
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
-	private static final String REPORT_TAB_NAME = "Card Ticket Report";
+	private static final String REPORT_TAB_NAME = "Card Payment Report";
 
 	public CardPaymentReportAction() {
 		super(REPORT_TAB_NAME);

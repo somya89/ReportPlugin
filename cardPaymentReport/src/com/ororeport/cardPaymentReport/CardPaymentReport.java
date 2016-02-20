@@ -29,7 +29,7 @@ import com.floreantpos.ui.util.TicketUtils;
 public class CardPaymentReport extends Report {
 	private CartPaymentReportModel itemReportModel;
 	private CartPaymentReportModel modifierReportModel;
-	private final static String USER_REPORT_DIR = "/com/ororeport/CardPaymentReport/template/";
+	private final static String USER_REPORT_DIR = "/com/ororeport/cardPaymentReport/template/";
 
 	public CardPaymentReport() {
 		super("CardPaymentReport");
@@ -46,7 +46,7 @@ public class CardPaymentReport extends Report {
 		JasperReport itemReport = ReportUtil.getReport("card_report", USER_REPORT_DIR, this.getClass());
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Card Ticket Report");
+		map.put("reportType", "Card Payment Report");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
