@@ -1,4 +1,4 @@
-package com.ororeport.categoryDetailReport;
+package com.ororeport.ticketWiseReport;
 
 import java.text.DecimalFormat;
 import java.util.List;

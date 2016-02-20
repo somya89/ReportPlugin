@@ -1,11 +1,11 @@
-package com.ororeport.categoryDetailReport;
+package com.ororeport.ticketWiseReport;
 
 import javax.swing.AbstractAction;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 import com.floreantpos.extension.ReportPlugin;
-import com.ororeport.categoryDetailReport.action.CategoryDetailReportAction;
+import com.ororeport.ticketWiseReport.action.CategoryDetailReportAction;
 
 @PluginImplementation
 public class CategoryReportPlugin implements ReportPlugin {

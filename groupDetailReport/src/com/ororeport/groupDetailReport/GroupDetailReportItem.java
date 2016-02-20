@@ -3,21 +3,22 @@ package com.ororeport.groupDetailReport;
 public class GroupDetailReportItem {
 	private String date;
 	private String groupName;
-	private double price;
-	private double totalAmount;
+	private String categoryName;
+	private Double price;
+	private Double totalAmount;
 	private Integer quantity;
-	private double vatTax;
-	private double svcTax;
+	private Double vatTax;
+	private Double svcTax;
 
-	public double getSvcTax() {
+	public Double getSvcTax() {
 		return svcTax;
 	}
 
-	public void setSvcTax(double svcTax) {
+	public void setSvcTax(Double svcTax) {
 		this.svcTax = svcTax;
 	}
 
-	private double discount;
+	private Double discount;
 
 	public String getGroupName() {
 		return groupName;
@@ -27,11 +28,11 @@ public class GroupDetailReportItem {
 		this.groupName = grpName;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -47,11 +48,11 @@ public class GroupDetailReportItem {
 		this.quantity = quantity;
 	}
 
-	public double getTotalAmount() {
+	public Double getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(double totalAmount) {
+	public void setTotalAmount(Double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
@@ -63,20 +64,28 @@ public class GroupDetailReportItem {
 		this.date = date;
 	}
 
-	public double getDiscount() {
+	public Double getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(double discount) {
+	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
 
-	public double getVatTax() {
+	public Double getVatTax() {
 		return vatTax;
 	}
 
-	public void setVatTax(double vatTax) {
+	public void setVatTax(Double vatTax) {
 		this.vatTax = vatTax;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 }

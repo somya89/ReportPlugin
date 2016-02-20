@@ -1,4 +1,4 @@
-package com.ororeport.categoryDetailReport;
+package com.ororeport.ticketWiseReport;
 
 public class CategoryDetailReportItem {
 	private String date;

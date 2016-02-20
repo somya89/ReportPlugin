@@ -4,7 +4,7 @@
  * Created on September 17, 2006, 11:38 PM
  */
 
-package com.ororeport.categoryDetailReport.ui;
+package com.ororeport.ticketWiseReport.ui;
 
 import com.floreantpos.report.Report;
 import com.floreantpos.report.ReportViewer;

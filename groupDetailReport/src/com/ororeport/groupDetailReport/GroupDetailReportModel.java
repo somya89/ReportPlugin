@@ -15,7 +15,7 @@ public class GroupDetailReportModel extends AbstractTableModel {
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Date", "Group Name", "Qty", "Amount", "Discount", "VAT", "SVC_Tax", "Total Amount" };
+	private String[] columnNames = { "Date", "Group Name", "Qty", "Amount", "Discount", "VAT", "SVC_Tax", "Total Amount", "Category Name" };
 	private List<GroupDetailReportItem> items;
 	private double grandTotal;
 
@@ -48,19 +48,21 @@ public class GroupDetailReportModel extends AbstractTableModel {
 		case 0:
 			return item.getDate() != null ? item.getDate() : "";
 		case 1:
-			return item.getGroupName();
+			return item.getGroupName() != null ? String.valueOf(item.getGroupName()) : "";
 		case 2:
 			return item.getQuantity() != null ? String.valueOf(item.getQuantity()) : "";
 		case 3:
-			return formatter.format(item.getPrice());
+			return item.getPrice() != null ? formatter.format(item.getPrice()) : "";
 		case 4:
-			return formatter.format(item.getDiscount());
+			return item.getDiscount() != null ? formatter.format(item.getDiscount()) : "";
 		case 5:
-			return formatter.format(item.getVatTax());
+			return item.getVatTax() != null ? formatter.format(item.getVatTax()) : "";
 		case 6:
-			return formatter.format(item.getSvcTax());
+			return item.getSvcTax() != null ? formatter.format(item.getSvcTax()) : "";
 		case 7:
-			return formatter.format(item.getTotalAmount());
+			return item.getTotalAmount() != null ? formatter.format(item.getTotalAmount()) : "";
+		case 8:
+			return item.getCategoryName() != null ? item.getCategoryName() : "";
 		}
 
 		return null;

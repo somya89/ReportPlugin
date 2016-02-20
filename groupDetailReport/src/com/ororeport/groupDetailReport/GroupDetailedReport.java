@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -66,11 +68,12 @@ public class GroupDetailedReport extends Report {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy");
 
 		GroupDetailReportItem grandTotalReportItem = new GroupDetailReportItem();
-		grandTotalReportItem.setDate("");
-		grandTotalReportItem.setGroupName("** GRAND TOTAL**");
+		grandTotalReportItem.setDate(null);
+		grandTotalReportItem.setCategoryName("** GRAND TOTAL**");
+		grandTotalReportItem.setGroupName("-------------------->>>>>");
 		grandTotalReportItem.setDiscount(0.0);
 		grandTotalReportItem.setPrice(0.0);
-		grandTotalReportItem.setQuantity(null);
+		grandTotalReportItem.setQuantity(0);
 		grandTotalReportItem.setVatTax(0.0);
 		grandTotalReportItem.setSvcTax(0.0);
 		grandTotalReportItem.setTotalAmount(0.0);
@@ -82,12 +85,24 @@ public class GroupDetailedReport extends Report {
 			Date d3 = c.getTime();
 			List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, d3);
 			HashMap<String, GroupDetail> groupMap = new HashMap<String, GroupDetail>();
+			HashMap<String, Set<String>> categoryMap = new HashMap<String, Set<String>>();
 
 			for (int i = 0; i < tickets.size(); i++) {
 				Ticket t = tickets.get(i);
 				List<TicketItem> items = t.getTicketItems();
 				for (TicketItem a : items) {
 					String groupName = a.getGroupName().trim();
+					String catName = a.getCategoryName().trim();
+					if (!categoryMap.containsKey(catName)) {
+						Set<String> groupSet1 = new HashSet<String>();
+						groupSet1.add(groupName);
+						categoryMap.put(catName, groupSet1);
+					} else {
+						Set<String> groupSet2 = categoryMap.get(catName);
+						groupSet2.add(groupName);
+						categoryMap.put(catName, groupSet2);
+					}
+
 					if (!groupMap.containsKey(groupName)) {
 						GroupDetail m1 = new GroupDetail(a.getItemCount(), a.getDiscountAmount(), a.getVatTaxAmount(), a.getServiceTaxAmount(), a.getSubtotalAmount(), a.getTotalAmount());
 						groupMap.put(groupName, m1);
@@ -99,27 +114,54 @@ public class GroupDetailedReport extends Report {
 				}
 			}
 
-			for (Map.Entry<String, GroupDetail> entry : groupMap.entrySet()) {
-				GroupDetail value = entry.getValue();
-				GroupDetailReportItem cdri = new GroupDetailReportItem();
-				cdri.setDate(dateFormat.format(date1));
-				cdri.setGroupName(entry.getKey());
-				cdri.setDiscount(value.getDiscount());
-				cdri.setPrice(value.getPrice());
-				cdri.setQuantity(value.getQuantity());
-				cdri.setVatTax(value.getVatTaxAmount());
-				cdri.setSvcTax(value.getSvcTaxAmount());
-				cdri.setTotalAmount(value.getTotalAmount());
+			for (Map.Entry<String, Set<String>> entryCat : categoryMap.entrySet()) {
+				Set<String> grpSet = entryCat.getValue();
+				GroupDetailReportItem gdri = new GroupDetailReportItem();
+				gdri.setCategoryName(entryCat.getKey());
+				gdri.setDate(dateFormat.format(date1));
+				gdri.setGroupName("----------------------------");
+				gdri.setDiscount(0.0);
+				gdri.setPrice(0.0);
+				gdri.setQuantity(0);
+				gdri.setVatTax(0.0);
+				gdri.setSvcTax(0.0);
+				gdri.setTotalAmount(0.0);
+				itemList.add(gdri);
 
-				grandTotalReportItem.setDiscount(grandTotalReportItem.getDiscount() + value.getDiscount());
-				grandTotalReportItem.setPrice(grandTotalReportItem.getPrice() + value.getPrice());
-				grandTotalReportItem.setVatTax(grandTotalReportItem.getVatTax() + value.getVatTaxAmount());
-				grandTotalReportItem.setSvcTax(grandTotalReportItem.getSvcTax() + value.getSvcTaxAmount());
-				grandTotalReportItem.setTotalAmount(grandTotalReportItem.getTotalAmount() + value.getTotalAmount());
+				for (String grpName : grpSet) {
+					if (groupMap.containsKey(grpName)) {
+						GroupDetail value = groupMap.get(grpName);
+						GroupDetailReportItem cdri = new GroupDetailReportItem();
+						cdri.setCategoryName(null);
+						cdri.setDate(null);
+						cdri.setGroupName(ReportUtil.toCamelCase(grpName));
+						cdri.setDiscount(value.getDiscount());
+						cdri.setPrice(value.getPrice());
+						cdri.setQuantity(value.getQuantity());
+						cdri.setVatTax(value.getVatTaxAmount());
+						cdri.setSvcTax(value.getSvcTaxAmount());
+						cdri.setTotalAmount(value.getTotalAmount());
 
-				itemList.add(cdri);
+						grandTotalReportItem.setQuantity(grandTotalReportItem.getQuantity() + value.getQuantity());
+						grandTotalReportItem.setDiscount(grandTotalReportItem.getDiscount() + value.getDiscount());
+						grandTotalReportItem.setPrice(grandTotalReportItem.getPrice() + value.getPrice());
+						grandTotalReportItem.setVatTax(grandTotalReportItem.getVatTax() + value.getVatTaxAmount());
+						grandTotalReportItem.setSvcTax(grandTotalReportItem.getSvcTax() + value.getSvcTaxAmount());
+						grandTotalReportItem.setTotalAmount(grandTotalReportItem.getTotalAmount() + value.getTotalAmount());
+
+						gdri.setQuantity(gdri.getQuantity() + value.getQuantity());
+						gdri.setDiscount(gdri.getDiscount() + value.getDiscount());
+						gdri.setPrice(gdri.getPrice() + value.getPrice());
+						gdri.setVatTax(gdri.getVatTax() + value.getVatTaxAmount());
+						gdri.setSvcTax(gdri.getSvcTax() + value.getSvcTaxAmount());
+						gdri.setTotalAmount(gdri.getTotalAmount() + value.getTotalAmount());
+
+						itemList.add(cdri);
+					}
+				}
 			}
 			date1 = d3;
+
 		}
 		itemList.add(grandTotalReportItem);
 		itemReportModel = new GroupDetailReportModel();

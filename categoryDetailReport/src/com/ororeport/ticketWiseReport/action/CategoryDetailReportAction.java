@@ -1,4 +1,4 @@
-package com.ororeport.categoryDetailReport.action;
+package com.ororeport.ticketWiseReport.action;
 
 import java.awt.event.ActionEvent;
 
@@ -6,8 +6,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JTabbedPane;
 
 import com.floreantpos.bo.ui.BackOfficeWindow;
-import com.ororeport.categoryDetailReport.CategoryDetailedReport;
-import com.ororeport.categoryDetailReport.ui.CategoryDetailReportViewer;
+import com.ororeport.ticketWiseReport.CategoryDetailedReport;
+import com.ororeport.ticketWiseReport.ui.CategoryDetailReportViewer;
 
 public class CategoryDetailReportAction extends AbstractAction {
 
