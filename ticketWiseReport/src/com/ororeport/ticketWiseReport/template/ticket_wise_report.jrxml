@@ -16,14 +16,11 @@
 	<field name="Date" class="java.lang.String"/>
 	<field name="Time" class="java.lang.String"/>
 	<field name="OrderType" class="java.lang.String"/>
-	<field name="Name" class="java.lang.String"/>
 	<field name="Cash" class="java.lang.String"/>
 	<field name="Card" class="java.lang.String"/>
-	<field name="Qty" class="java.lang.String"/>
 	<field name="Vat" class="java.lang.String"/>
 	<field name="Customer" class="java.lang.String"/>
 	<field name="Svc Tax" class="java.lang.String"/>
-	<field name="Base Price" class="java.lang.String"/>
 	<field name="Total Amount" class="java.lang.String"/>
 	<field name="Total_noTax" class="java.lang.String"/>
 	<field name="Ticket" class="java.lang.String"/>

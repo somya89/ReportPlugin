@@ -51,7 +51,7 @@ public class TicketDetailedReport extends Report {
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Ticket Detail Report");
+		map.put("reportType", "Ticket Details Sales Daily");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -159,7 +159,7 @@ public class TicketDetailedReport extends Report {
 						reportItem.setTicketId(null);
 						reportItem.setTime(null);
 					}
-					reportItem.setDate(null);					
+					reportItem.setDate(null);
 					reportItem.setPrice(ticketItem.getUnitPrice());
 					reportItem.setName(ticketItem.getName());
 					reportItem.setVatTax(ticketItem.getVatTaxAmount());

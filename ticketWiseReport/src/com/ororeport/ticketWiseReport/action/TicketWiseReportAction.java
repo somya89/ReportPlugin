@@ -15,7 +15,7 @@ public class TicketWiseReportAction extends AbstractAction {
 	 * 
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
-	private static final String REPORT_TAB_NAME = "Ticket Wise Report";
+	private static final String REPORT_TAB_NAME = "Ticket Sales Daily";
 
 	public TicketWiseReportAction() {
 		super(REPORT_TAB_NAME);

@@ -41,7 +41,7 @@ public class TicketWiseReport extends Report {
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Ticket Wise Report");
+		map.put("reportType", "Ticket Sales Daily");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -66,36 +66,52 @@ public class TicketWiseReport extends Report {
 	@Override
 	public void createModels(Date date1, Date date2) {
 		List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, date2);
-		HashMap<String, TicketWiseReportItem> itemMap = new HashMap<String, TicketWiseReportItem>();
 		List<TicketWiseReportItem> itemList = new ArrayList<TicketWiseReportItem>();
 
-		String startDate = null;
-		String ticketDate = null;
-		String ticketTime = null;
-		String customer = null;
+		TicketWiseReportItem gdri = new TicketWiseReportItem();
+		gdri.setDate("*TOTAL*");
+		gdri.setCustomer(null);
+		gdri.setTicketId(null);
+		gdri.setTime(null);
+		gdri.setOrderType(null);
+		gdri.setCardAmount(0.0);
+		gdri.setCashAmount(0.0);
+		gdri.setSubTotalAmount(0.0);
+		gdri.setVatTax(0.0);
+		gdri.setSvcTax(0.0);
+		gdri.setDiscount(0.0);
+		gdri.setTotalAmount(0.0);
+
 		for (Ticket t : tickets) {
+			TicketWiseReportItem reportItem = new TicketWiseReportItem();
 
 			Ticket ticket = TicketDAO.getInstance().loadFullTicket(t.getId());
-			ticketDate = ticket.getCreateDateFormatted();
-			ticketTime = ticket.getCreateTimeFormatted();
-			customer = ticket.getCustomer() != null ? ticket.getCustomer().getName() : "-";
-			if (!ticketDate.equals(startDate)) {
-				TicketWiseReportItem reportItem = new TicketWiseReportItem();
-				reportItem.setDate(ticketDate);
-				reportItem.setTime(null);
-				reportItem.setOrderType(null);
-				reportItem.setCustomer(null);
-				reportItem.setTicketId(null);
-				reportItem.setDiscount(null);
-				reportItem.setVatTax(null);
-				reportItem.setSvcTax(null);
-				reportItem.setCashAmount(null);
-				reportItem.setCardAmount(null);
-				reportItem.setSubTotalAmount(null);
-				reportItem.setTotalAmount(null);
-				startDate = ticketDate;
-				itemList.add(reportItem);
+			reportItem.setDate(ticket.getCreateDateFormatted());
+			reportItem.setTime(ticket.getCreateTimeFormatted());
+			reportItem.setTicketId(TicketUtils.getTicketNumber(ticket));
+			
+			reportItem.setVatTax(0.0);
+			reportItem.setSvcTax(0.0);
+			reportItem.setDiscount(0.0);
+			reportItem.setTotalAmount(0.0);
+			reportItem.setCardAmount(0.0);
+			reportItem.setCashAmount(0.0);
+			
+			reportItem.setSubTotalAmount(ticket.getSubtotalAmount());
+			gdri.setSubTotalAmount(gdri.getSubTotalAmount() + ticket.getSubtotalAmount());
+
+			String orderType = null;
+			if (ticket.getTicketType().contains(OrderType.TAKE_OUT.name())) {
+				orderType = "TakeOut";
+			} else if (ticket.getTicketType().contains(OrderType.HOME_DELIVERY.name())) {
+				orderType = "Delivery";
+			} else if (ticket.getTicketType().contains(OrderType.DINE_IN.name())) {
+				orderType = "Dine in";
 			}
+			reportItem.setOrderType(orderType);
+
+			String customer = ticket.getCustomer() != null ? ticket.getCustomer().getName() : "-";
+			reportItem.setCustomer(customer);
 
 			List<TicketItem> ticketItems = ticket.getTicketItems();
 			Set<PosTransaction> tansactions = ticket.getTransactions();
@@ -108,47 +124,26 @@ public class TicketWiseReport extends Report {
 					cardAmount += trans.getAmount();
 				}
 			}
-			if (ticketItems == null)
-				continue;
-			String key = null;
+			reportItem.setCardAmount(reportItem.getCardAmount() + cardAmount);
+			reportItem.setCashAmount(reportItem.getCashAmount() + cashAmount);
+			gdri.setCashAmount(gdri.getCashAmount() + cashAmount);
+			gdri.setCardAmount(gdri.getCardAmount() + cardAmount);
 
-			double ticketSubAmount = ticket.getSubtotalAmount();
-			String orderType = null;
-			if (ticket.getTicketType().contains(OrderType.TAKE_OUT.name())) {
-				orderType = "TakeOut";
-			} else if (ticket.getTicketType().contains(OrderType.HOME_DELIVERY.name())) {
-				orderType = "Delivery";
-			} else if (ticket.getTicketType().contains(OrderType.DINE_IN.name())) {
-				orderType = "Dine in";
-			}
 			for (TicketItem ticketItem : ticketItems) {
-				if (ticketItem.getItemId() == null) {
-					key = ticketItem.getName();
-				} else {
-					key = ticketItem.getItemId().toString();
-				}
-				TicketWiseReportItem reportItem = itemMap.get(key);
-				if (reportItem == null) {
-					reportItem = new TicketWiseReportItem();
-					reportItem.setTicketId(TicketUtils.getTicketNumber(ticket));
-					reportItem.setTime(ticketTime);
-					reportItem.setOrderType(orderType);
-					reportItem.setCustomer(customer);
-					reportItem.setCardAmount(cardAmount);
-					reportItem.setCashAmount(cashAmount);
-					reportItem.setSubTotalAmount(ticketSubAmount);
-					reportItem.setDate(null);
-					reportItem.setVatTax(ticketItem.getVatTaxAmount());
-					reportItem.setSvcTax(ticketItem.getServiceTaxAmount());
-					reportItem.setDiscount(ticketItem.getDiscountAmount());
-					reportItem.setTotalAmount(ticketItem.getTotalAmount());
-					itemList.add(reportItem);
-				}
-				ticket = null;
-			}
-			itemReportModel = new TicketWiseReportModel();
-			itemReportModel.setItems(itemList);
-		}
+				reportItem.setVatTax(reportItem.getVatTax() + ticketItem.getVatTaxAmount());
+				reportItem.setSvcTax(reportItem.getSvcTax() + ticketItem.getServiceTaxAmount());
+				reportItem.setDiscount(reportItem.getDiscount() + ticketItem.getDiscountAmount());
+				reportItem.setTotalAmount(reportItem.getTotalAmount() + ticketItem.getTotalAmount());
 
+				gdri.setVatTax(gdri.getVatTax() + ticketItem.getVatTaxAmount());
+				gdri.setSvcTax(gdri.getSvcTax() + ticketItem.getServiceTaxAmount());
+				gdri.setDiscount(gdri.getDiscount() + ticketItem.getDiscountAmount());
+				gdri.setTotalAmount(gdri.getTotalAmount() + ticketItem.getTotalAmount());
+			}
+			itemList.add(reportItem);
+		}
+		itemList.add(gdri);
+		itemReportModel = new TicketWiseReportModel();
+		itemReportModel.setItems(itemList);
 	}
 }
