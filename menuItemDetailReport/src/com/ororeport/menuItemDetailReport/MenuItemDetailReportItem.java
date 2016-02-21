@@ -3,6 +3,8 @@ package com.ororeport.menuItemDetailReport;
 public class MenuItemDetailReportItem {
 	private String date;
 	private String menuName;
+	private String categoryName;
+	private String groupName;
 	private Double basePrice;
 	private double price;
 	private double totalAmount;
@@ -86,6 +88,22 @@ public class MenuItemDetailReportItem {
 
 	public void setBasePrice(Double basePrice) {
 		this.basePrice = basePrice;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 }

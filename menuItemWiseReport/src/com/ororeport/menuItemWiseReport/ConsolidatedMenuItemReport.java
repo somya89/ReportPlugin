@@ -69,8 +69,8 @@ public class ConsolidatedMenuItemReport extends Report {
 		MenuItemWiseReportItem grandTotalReportItem = new MenuItemWiseReportItem();
 		grandTotalReportItem.setDate("");
 		grandTotalReportItem.setCategoryName("** GRAND TOTAL**");
-		grandTotalReportItem.setGroupName("-------------");
-		grandTotalReportItem.setMenuName("-------------");
+		grandTotalReportItem.setGroupName(null);
+		grandTotalReportItem.setMenuName(null);
 		grandTotalReportItem.setBasePrice(null);
 		grandTotalReportItem.setDiscount(0.0);
 		grandTotalReportItem.setPrice(0.0);
