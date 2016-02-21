@@ -45,7 +45,7 @@ public class DayWiseReport extends Report {
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Day Wise Consolidated Report");
+		map.put("reportType", "Daily Sales Consolidated");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("itemDataSource", new JRTableModelDataSource(itemReportModel));

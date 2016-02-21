@@ -2,6 +2,8 @@ package com.ororeport.menuItemWiseReport;
 
 public class MenuItemWiseReportItem {
 	private String date;
+	private String groupName;
+	private String categoryName;
 	private String menuName;
 	private Double basePrice;
 	private double price;
@@ -9,6 +11,11 @@ public class MenuItemWiseReportItem {
 	private Integer quantity;
 	private double vatTax;
 	private double svcTax;
+	private double discount;
+
+	public MenuItemWiseReportItem() {
+		super();
+	}
 
 	public double getSvcTax() {
 		return svcTax;
@@ -17,8 +24,6 @@ public class MenuItemWiseReportItem {
 	public void setSvcTax(double svcTax) {
 		this.svcTax = svcTax;
 	}
-
-	private double discount;
 
 	public String getMenuName() {
 		return menuName;
@@ -34,10 +39,6 @@ public class MenuItemWiseReportItem {
 
 	public void setPrice(double price) {
 		this.price = price;
-	}
-
-	public MenuItemWiseReportItem() {
-		super();
 	}
 
 	public Integer getQuantity() {
@@ -86,6 +87,22 @@ public class MenuItemWiseReportItem {
 
 	public void setBasePrice(Double basePrice) {
 		this.basePrice = basePrice;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 }

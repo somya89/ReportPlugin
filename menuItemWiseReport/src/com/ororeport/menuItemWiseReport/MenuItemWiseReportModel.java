@@ -15,7 +15,7 @@ public class MenuItemWiseReportModel extends AbstractTableModel {
 	private static DecimalFormat formatter = new DecimalFormat("#,##0.00");
 	private String currencySymbol;
 
-	private String[] columnNames = { "Date", "Menu Item Name", "Base_Price", "Qty", "Amount", "Discount", "VAT", "SVC_Tax", "Total Amount" };
+	private String[] columnNames = { "Date", "Menu Item Name", "Base_Price", "Qty", "Amount", "Discount", "VAT", "SVC_Tax", "Total Amount", "Category", "Group" };
 	private List<MenuItemWiseReportItem> items;
 	private double grandTotal;
 
@@ -63,6 +63,10 @@ public class MenuItemWiseReportModel extends AbstractTableModel {
 			return formatter.format(item.getSvcTax());
 		case 8:
 			return formatter.format(item.getTotalAmount());
+		case 9:
+			return item.getCategoryName() != null ? item.getCategoryName() : "";
+		case 10:
+			return item.getGroupName() != null ? item.getGroupName() : "";
 		}
 
 		return null;

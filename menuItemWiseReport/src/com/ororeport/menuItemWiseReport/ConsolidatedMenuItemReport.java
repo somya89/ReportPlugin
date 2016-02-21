@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -38,7 +40,7 @@ public class ConsolidatedMenuItemReport extends Report {
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Consolidated Menu Item Report");
+		map.put("reportType", "MenuItem Wise Sales Consolidated");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -66,11 +68,13 @@ public class ConsolidatedMenuItemReport extends Report {
 
 		MenuItemWiseReportItem grandTotalReportItem = new MenuItemWiseReportItem();
 		grandTotalReportItem.setDate("");
-		grandTotalReportItem.setMenuName("** GRAND TOTAL**");
+		grandTotalReportItem.setCategoryName("** GRAND TOTAL**");
+		grandTotalReportItem.setGroupName("-------------");
+		grandTotalReportItem.setMenuName("-------------");
 		grandTotalReportItem.setBasePrice(null);
 		grandTotalReportItem.setDiscount(0.0);
 		grandTotalReportItem.setPrice(0.0);
-		grandTotalReportItem.setQuantity(null);
+		grandTotalReportItem.setQuantity(0);
 		grandTotalReportItem.setVatTax(0.0);
 		grandTotalReportItem.setSvcTax(0.0);
 		grandTotalReportItem.setTotalAmount(0.0);
@@ -83,44 +87,126 @@ public class ConsolidatedMenuItemReport extends Report {
 			List<Ticket> tickets = TicketDAO.getInstance().findTickets(date1, d3);
 			d3 = c.getTime();
 			HashMap<String, MenuItemDetail> menuItemMap = new HashMap<String, MenuItemDetail>();
+			HashMap<String, Set<String>> groupMap = new HashMap<String, Set<String>>();
+			HashMap<String, Set<String>> categoryMap = new HashMap<String, Set<String>>();
 
 			for (int i = 0; i < tickets.size(); i++) {
 				Ticket t = tickets.get(i);
 				List<TicketItem> items = t.getTicketItems();
 				for (TicketItem a : items) {
 					String menuItemName = a.getName().trim();
+					if (menuItemName.startsWith("**"))
+						continue;
+					String groupName = a.getGroupName().trim();
+					String catName = a.getCategoryName().trim();
+
 					if (!menuItemMap.containsKey(menuItemName)) {
-						MenuItemDetail m1 = new MenuItemDetail(a.getItemCount(), a.getDiscountAmount(), a.getVatTaxAmount(), a.getServiceTaxAmount(), a.getSubtotalAmount(), a.getTotalAmount());
+						MenuItemDetail m1 = new MenuItemDetail(a.getItemCount(), a.getDiscountAmount(), a.getVatTaxAmount(), a.getServiceTaxAmount(), a.getSubtotalAmount(), a.getUnitPriceDisplay(),
+								a.getTotalAmount());
 						menuItemMap.put(menuItemName, m1);
 					} else {
 						MenuItemDetail m2 = menuItemMap.get(menuItemName);
 						m2.add(a);
 						menuItemMap.put(menuItemName, m2);
 					}
+
+					if (!categoryMap.containsKey(catName)) {
+						Set<String> groupSet1 = new HashSet<String>();
+						groupSet1.add(groupName);
+						categoryMap.put(catName, groupSet1);
+					} else {
+						Set<String> groupSet2 = categoryMap.get(catName);
+						groupSet2.add(groupName);
+						categoryMap.put(catName, groupSet2);
+					}
+
+					if (!groupMap.containsKey(groupName)) {
+						Set<String> menuItemSet = new HashSet<String>();
+						menuItemSet.add(menuItemName);
+						groupMap.put(groupName, menuItemSet);
+					} else {
+						Set<String> menuItemSet1 = groupMap.get(groupName);
+						menuItemSet1.add(menuItemName);
+						groupMap.put(groupName, menuItemSet1);
+					}
 				}
 			}
 
-			for (Map.Entry<String, MenuItemDetail> entry : menuItemMap.entrySet()) {
-				MenuItemDetail value = entry.getValue();
-				MenuItemWiseReportItem mdri = new MenuItemWiseReportItem();
-				mdri.setDate(dateFormat.format(date1));
-				mdri.setMenuName(entry.getKey());
-				mdri.setBasePrice(value.getPrice() / value.getQuantity());
+			for (Map.Entry<String, Set<String>> entryCat : categoryMap.entrySet()) {
+				Set<String> grpSet = entryCat.getValue();
+				String catName = entryCat.getKey();
+				MenuItemWiseReportItem crdi = new MenuItemWiseReportItem();
+				crdi.setDate(null);
+				crdi.setCategoryName(catName);
+				crdi.setGroupName(null);
+				crdi.setMenuName(null);
+				crdi.setDiscount(0.0);
+				crdi.setBasePrice(null);
+				crdi.setPrice(0.0);
+				crdi.setQuantity(0);
+				crdi.setVatTax(0.0);
+				crdi.setSvcTax(0.0);
+				crdi.setTotalAmount(0.0);
+				itemList.add(crdi);
 
-				mdri.setDiscount(value.getDiscount());
-				mdri.setPrice(value.getPrice());
-				mdri.setQuantity(value.getQuantity());
-				mdri.setVatTax(value.getVatTaxAmount());
-				mdri.setSvcTax(value.getSvcTaxAmount());
-				mdri.setTotalAmount(value.getTotalAmount());
+				for (String groupName : grpSet) {
+					if (groupMap.containsKey(groupName)) {
+						Set<String> menuSet = groupMap.get(groupName);
+						MenuItemWiseReportItem gdri = new MenuItemWiseReportItem();
+						gdri.setDate(null);
+						gdri.setCategoryName(null);
+						gdri.setGroupName(groupName);
+						gdri.setMenuName(null);
+						gdri.setDiscount(0.0);
+						gdri.setPrice(0.0);
+						gdri.setBasePrice(null);
+						gdri.setQuantity(0);
+						gdri.setVatTax(0.0);
+						gdri.setSvcTax(0.0);
+						gdri.setTotalAmount(0.0);
+						itemList.add(gdri);
+						for (String menuName : menuSet) {
+							if (menuItemMap.containsKey(menuName)) {
+								MenuItemDetail value = menuItemMap.get(menuName);
+								MenuItemWiseReportItem mdri = new MenuItemWiseReportItem();
+								mdri.setCategoryName(null);
+								mdri.setGroupName(null);
+								mdri.setMenuName(menuName);
+								mdri.setDate(dateFormat.format(date1));
+								mdri.setDiscount(value.getDiscount());
+								mdri.setPrice(value.getPrice());
+								mdri.setBasePrice(value.getBasePrice());
+								mdri.setQuantity(value.getQuantity());
+								mdri.setVatTax(value.getVatTaxAmount());
+								mdri.setSvcTax(value.getSvcTaxAmount());
+								mdri.setTotalAmount(value.getTotalAmount());
 
-				grandTotalReportItem.setDiscount(grandTotalReportItem.getDiscount() + value.getDiscount());
-				grandTotalReportItem.setPrice(grandTotalReportItem.getPrice() + value.getPrice());
-				grandTotalReportItem.setVatTax(grandTotalReportItem.getVatTax() + value.getVatTaxAmount());
-				grandTotalReportItem.setSvcTax(grandTotalReportItem.getSvcTax() + value.getSvcTaxAmount());
-				grandTotalReportItem.setTotalAmount(grandTotalReportItem.getTotalAmount() + value.getTotalAmount());
+								grandTotalReportItem.setQuantity(grandTotalReportItem.getQuantity() + value.getQuantity());
+								grandTotalReportItem.setDiscount(grandTotalReportItem.getDiscount() + value.getDiscount());
+								grandTotalReportItem.setPrice(grandTotalReportItem.getPrice() + value.getPrice());
+								grandTotalReportItem.setVatTax(grandTotalReportItem.getVatTax() + value.getVatTaxAmount());
+								grandTotalReportItem.setSvcTax(grandTotalReportItem.getSvcTax() + value.getSvcTaxAmount());
+								grandTotalReportItem.setTotalAmount(grandTotalReportItem.getTotalAmount() + value.getTotalAmount());
 
-				itemList.add(mdri);
+								gdri.setQuantity(gdri.getQuantity() + value.getQuantity());
+								gdri.setDiscount(gdri.getDiscount() + value.getDiscount());
+								gdri.setPrice(gdri.getPrice() + value.getPrice());
+								gdri.setVatTax(gdri.getVatTax() + value.getVatTaxAmount());
+								gdri.setSvcTax(gdri.getSvcTax() + value.getSvcTaxAmount());
+								gdri.setTotalAmount(gdri.getTotalAmount() + value.getTotalAmount());
+
+								crdi.setQuantity(crdi.getQuantity() + value.getQuantity());
+								crdi.setDiscount(crdi.getDiscount() + value.getDiscount());
+								crdi.setPrice(crdi.getPrice() + value.getPrice());
+								crdi.setVatTax(crdi.getVatTax() + value.getVatTaxAmount());
+								crdi.setSvcTax(crdi.getSvcTax() + value.getSvcTaxAmount());
+								crdi.setTotalAmount(crdi.getTotalAmount() + value.getTotalAmount());
+
+								itemList.add(mdri);
+							}
+						}
+					}
+				}
 			}
 			date1 = d3;
 		}
@@ -138,6 +224,7 @@ public class ConsolidatedMenuItemReport extends Report {
 		private double svcTaxAmount;
 		private double price;
 		private double totalAmount;
+		private double basePrice;
 
 		public int getQuantity() {
 			return quantity;
@@ -161,6 +248,14 @@ public class ConsolidatedMenuItemReport extends Report {
 
 		public void setPrice(double price) {
 			this.price = price;
+		}
+
+		public double getBasePrice() {
+			return basePrice;
+		}
+
+		public void setBasePrice(double basePrice) {
+			this.basePrice = basePrice;
 		}
 
 		public double getTotalAmount() {
@@ -205,12 +300,13 @@ public class ConsolidatedMenuItemReport extends Report {
 			this.totalAmount += t.getTotalAmount();
 		}
 
-		public MenuItemDetail(int qty, double disc, double vatTax, double svcTax, double price, double totalAmt) {
+		public MenuItemDetail(int qty, double disc, double vatTax, double svcTax, double price, double basePrice, double totalAmt) {
 			this.quantity = qty;
 			this.discount = disc;
 			this.vatTaxAmount += vatTax;
 			this.svcTaxAmount += svcTax;
 			this.price = price;
+			this.basePrice = basePrice;
 			this.totalAmount = totalAmt;
 		}
 

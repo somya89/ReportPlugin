@@ -15,7 +15,7 @@ public class GroupWiseReportAction extends AbstractAction {
 	 * 
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
-	private static final String REPORT_TAB_NAME = "Group Consolidated Report";
+	private static final String REPORT_TAB_NAME = "Menu Group Wise Sales Consolidated";
 
 	public GroupWiseReportAction() {
 		super(REPORT_TAB_NAME);

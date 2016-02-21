@@ -15,7 +15,7 @@ public class MenuItemWiseReportAction extends AbstractAction {
 	 * 
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
-	private static final String REPORT_TAB_NAME = "MenuItem Consolidated Report";
+	private static final String REPORT_TAB_NAME = "MenuItem Wise Sales Consolidated";
 
 	public MenuItemWiseReportAction() {
 		super(REPORT_TAB_NAME);

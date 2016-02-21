@@ -40,7 +40,7 @@ public class ConsolidatedGroupReport extends Report {
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Consolidated Menu Group Report");
+		map.put("reportType", "Menu Group Wise Sales Consolidated");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
@@ -91,6 +91,9 @@ public class ConsolidatedGroupReport extends Report {
 				Ticket t = tickets.get(i);
 				List<TicketItem> items = t.getTicketItems();
 				for (TicketItem a : items) {
+					String menuItemName = a.getName().trim();
+					if (menuItemName.startsWith("**"))
+						continue;
 					String groupName = a.getGroupName().trim();
 					String catName = a.getCategoryName().trim();
 					if (!categoryMap.containsKey(catName)) {

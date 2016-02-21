@@ -16,7 +16,7 @@ public class DayWiseReportAction extends AbstractAction {
 	 *
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
-	private static final String REPORT_TAB_NAME = "Day Wise Consolidated Report";
+	private static final String REPORT_TAB_NAME = "Daily Sales Consolidated";
 
 	public DayWiseReportAction() {
 		super(REPORT_TAB_NAME);

@@ -15,7 +15,7 @@ public class MenuItemDetailReportAction extends AbstractAction {
 	 * 
 	 */
 	private static final long serialVersionUID = -5110637654763546195L;
-	private static final String REPORT_TAB_NAME = "Menu Item Detail Report";
+	private static final String REPORT_TAB_NAME = "Menu Item Wise Sales Daily";
 
 	public MenuItemDetailReportAction() {
 		super(REPORT_TAB_NAME);
