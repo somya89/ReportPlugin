@@ -132,7 +132,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportTime}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-3" x="75" y="36" width="201" height="19"/>
+				<reportElement key="textField-3" x="75" y="36" width="422" height="19"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>

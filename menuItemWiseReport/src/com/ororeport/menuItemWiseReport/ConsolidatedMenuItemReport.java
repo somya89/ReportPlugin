@@ -40,7 +40,7 @@ public class ConsolidatedMenuItemReport extends Report {
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "MenuItem Wise Sales Consolidated");
+		map.put("reportType", "Menu Item Wise Sales Consolidated");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);

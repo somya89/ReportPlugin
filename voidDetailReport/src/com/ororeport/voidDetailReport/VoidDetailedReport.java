@@ -50,7 +50,7 @@ public class VoidDetailedReport extends Report {
 
 		HashMap map = new HashMap();
 		ReportUtil.populateRestaurantProperties(map);
-		map.put("reportType", "Void Ticket Detail Report");
+		map.put("reportType", "Void Ticket Details Daily");
 		map.put("reportTime", ReportService.formatFullDate(new Date()));
 		map.put("dateRange", ReportService.formatFullDate(getStartDate()) + " to " + ReportService.formatFullDate(getEndDate()));
 		map.put("terminalName", com.floreantpos.POSConstants.ALL);
