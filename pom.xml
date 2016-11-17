@@ -19,6 +19,7 @@
 		<module>ticketWiseReport</module>
 		<module>menuItemWiseReport</module>
 		<module>groupWiseReport</module>
+		<module>taxWiseReport</module>
 		<module>cardPaymentReport</module>
 	</modules>
 	<repositories>
@@ -33,7 +34,7 @@
 	</repositories>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-			<resources>
+		<resources>
 			<resource>
 				<directory>src</directory>
 				<excludes>
